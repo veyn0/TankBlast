@@ -1,0 +1,8 @@
+Table users {
+  id char(36) [primary key]
+  username varchar(255) [unique]
+  email varchar(255)
+  password_hash varchar(255)
+  created_at timestamp
+  updated_at timestamp
+}
