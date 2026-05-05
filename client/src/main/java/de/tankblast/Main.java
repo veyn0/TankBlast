@@ -8,6 +8,7 @@ public class Main {
         TankBlastWindow window = new TankBlastWindow();
 
         window.open();
+
     }
 
 }
