@@ -1,4 +1,4 @@
 package de.tankblast.protocol;
 
-public class ProtocolManager {
+public interface GamePacket {
 }
