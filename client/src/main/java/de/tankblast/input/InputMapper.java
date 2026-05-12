@@ -1,43 +1,41 @@
 package de.tankblast.input;
 
-import java.util.Map;
-
 public class InputMapper {
 
-    private Map<Integer, Long> keyStrokes;
-
-    public void setKeyStrokes(Map<Integer, Long> keyStrokes) {
-        this.keyStrokes = keyStrokes;
+    public static float getForwardKeyPercentage(InputContext inputContext){
+        return getKeyPressedPercentage(inputContext, Key.W);
     }
 
-    private long timeSinceLastTickNanos;
-
-    public float getForwardKeyPercentage(){
-
+    public static float getBackwardKeyPercentage(InputContext inputContext){
+        return getKeyPressedPercentage(inputContext, Key.S);
     }
 
-    public float getBackwardKeyPercentage(){
-
+    public static float getRotateRightKeyPercentage(InputContext inputContext){
+        return getKeyPressedPercentage(inputContext, Key.D);
     }
 
-    public float getRotateRightKeyPercentage(){
-
+    public static float getRotateLeftKeyPercentage(InputContext inputContext){
+        return getKeyPressedPercentage(inputContext, Key.A);
     }
 
-    public float getRotateLeftKeyPercentage(){
-
+    public static float getMovementPercentage(InputContext inputContext){
+        return (float) Math.clamp((getForwardKeyPercentage(inputContext) - getBackwardKeyPercentage(inputContext)) , -1, 1);
     }
 
-    public float getMovement(){
-
+    public static float getRotationPercentage(InputContext inputContext){
+        return (float) Math.clamp((getRotateRightKeyPercentage(inputContext) - getRotateLeftKeyPercentage(inputContext)) , -1, 1);
     }
 
-    public float getRotation(){
-
+    public static double getRotationDegrees(InputContext inputContext, double rotationSpeed){
+        return (rotationSpeed * inputContext.getTimeSinceLastTickNanos()/1_000_000) * getRotationPercentage(inputContext);
     }
 
-    public float getRotationDegrees(double tickTimeNanos, double rotationSpeed){
+    public static double getMovementDistance(InputContext inputContext, double movementSpeed){
+        return (movementSpeed * inputContext.getTimeSinceLastTickNanos()/1_000_000) * getMovementPercentage(inputContext);
+    }
 
+    private static float getKeyPressedPercentage(InputContext inputContext, Key key){
+        return (float) Math.clamp(inputContext.getTimeSinceLastTickNanos() / inputContext.getKeyStrokes().get(key.getKeyCode()), 0, 1);
     }
 
 }
