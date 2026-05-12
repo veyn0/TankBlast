@@ -4,8 +4,7 @@ import de.tankblast.model.geometry.Vector;
 
 import java.util.List;
 
-public class RectangleBoundingBox implements BoundingBox{
-
+public class TriangleBoundingBox implements BoundingBox{
 
     @Override
     public boolean isIntersecting(Vector v) {
