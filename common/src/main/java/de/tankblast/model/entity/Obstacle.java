@@ -3,7 +3,7 @@ package de.tankblast.model.entity;
 import de.tankblast.model.geometry.Location;
 import de.tankblast.model.geometry.boundingbox.BoundingBox;
 
-public class Player implements Entity {
+public class Obstacle implements Entity{
 
     @Override
     public Location getLocation() {
