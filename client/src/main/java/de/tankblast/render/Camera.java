@@ -6,4 +6,6 @@ public interface Camera {
 
     public Vector getPosition();
 
+    public boolean isInFrame(Vector vector, float aspectRatio);
+
 }

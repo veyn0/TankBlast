@@ -17,4 +17,15 @@ public class Vector {
         return new Vector( x + offsetX, y + offsetY, z + offsetZ);
     }
 
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public double getZ() {
+        return z;
+    }
 }
