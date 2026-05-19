@@ -1,4 +1,4 @@
-package de.tankblast.render;
+package de.tankblast.view;
 
 import java.awt.image.BufferedImage;
 
