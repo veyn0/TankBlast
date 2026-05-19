@@ -25,4 +25,12 @@ public class MenuLocation {
     public double getHeight() {
         return height;
     }
+
+    public boolean isBetween(double x, double y){
+        double minX = Math.min(this.x, this.x + width);
+        double maxX = Math.max(this.x, this.x + width);
+        double minY = Math.min(this.y, this.y + height);
+        double maxY = Math.max(this.y, this.y + height);
+        return x >= minX && x <= maxX && y >= minY && y <= maxY;
+    }
 }
