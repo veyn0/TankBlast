@@ -1,6 +1,6 @@
 package de.tankblast.render;
 
-public class Pixel {
+public class Voxel {
 
     private int colour;
     private double x, y, size, rotation;
