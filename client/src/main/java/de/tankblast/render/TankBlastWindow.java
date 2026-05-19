@@ -1,29 +1,24 @@
 package de.tankblast.render;
 
-public class TankBlastWindow {
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
-    public void open() throws  Exception{
-//        JFrame frame = new JFrame("TankBlast");
-//        InputManager inputManager = new InputManager();
-//        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-//        frame.setSize(100,100);
-//        frame.addKeyListener(new InputListener(inputManager));
-//        frame.setVisible(true);
-//
-//        while (true) {
-//            new Thread(()->{
-//                displayKeyTimes(inputManager.onTick(System.nanoTime()));
-//                System.out.println("Ticked");
-//            }).start();
-//            Thread.sleep(1000);
-//        }
+public class TankBlastWindow extends JFrame {
+    private int width, height;
+    private JLabel label;
 
+    public TankBlastWindow(int width, int height) {
+        setSize(width, height);
+        setResizable(false);
+        setLayout(new BorderLayout());
+        label = new JLabel();
+        add(label, BorderLayout.CENTER);
     }
 
-//    private void displayKeyTimes(Map<Integer, Long> times){
-//        for(int i : times.keySet()){
-//            System.out.println("Key " + i + " was pressed for: " + (times.get(i)));
-//        }
-//    }
-
+    public void showFrame(BufferedImage frame) {
+        if (frame.getWidth() != width || frame.getHeight() != height) throw new IllegalArgumentException();
+        label.setIcon(new ImageIcon(frame));
+        label.repaint();
+    }
 }
