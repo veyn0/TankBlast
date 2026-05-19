@@ -6,6 +6,8 @@ public interface Menu {
 
     public List<MenuElement> getElements();
 
+    public List<ElementInteractionListener> getInteractionListener();
+
 
 
 }
