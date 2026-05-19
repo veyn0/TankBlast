@@ -1,10 +1,4 @@
-package de.tankblast.view;
-
-import de.tankblast.input.InputListener;
-import de.tankblast.input.InputManager;
-
-import javax.swing.*;
-import java.util.Map;
+package de.tankblast.render;
 
 public class TankBlastWindow {
 

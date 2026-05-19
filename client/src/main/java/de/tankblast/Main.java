@@ -1,6 +1,6 @@
 package de.tankblast;
 
-import de.tankblast.view.TankBlastWindow;
+import de.tankblast.render.TankBlastWindow;
 
 public class Main {
 
