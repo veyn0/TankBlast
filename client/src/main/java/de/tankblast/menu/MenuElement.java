@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface MenuElement {
 
-    public MenuLocation getMenuLocation();
+    public MenuElementLocation getMenuLocation();
 
     public List<ElementInteractionListener> getInteractionListener();
 

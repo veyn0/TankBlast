@@ -1,9 +1,9 @@
 package de.tankblast.menu;
 
-public class MenuLocation {
+public class MenuElementLocation {
     private double x, y, width, height;
 
-    public MenuLocation(double x, double y, double width, double height) {
+    public MenuElementLocation(double x, double y, double width, double height) {
         this.x = x;
         this.y = y;
         this.width = width;
