@@ -1,7 +1,9 @@
 package de.tankblast.render;
 
+import java.util.List;
+
 public interface GraphicsComponent {
 
-    public Voxel[] getVoxel();
+    public List<Voxel> getVoxel();
 
 }

@@ -19,6 +19,7 @@ public class VoxelRenderer implements Renderer{
     @Override
     public void clear(int colour) {
         synchronized (lock){
+            this.backgroundColour = colour;
             voxels.clear();
         }
     }
