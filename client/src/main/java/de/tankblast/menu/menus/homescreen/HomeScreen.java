@@ -18,13 +18,21 @@ public class HomeScreen implements Menu, ElementInteractionListener, GraphicsCom
 
     private final Object lock = new Object();
 
+    private Texture button1;
+    private Texture button2;
+
     public HomeScreen(){
         synchronized (lock) {
-            Texture texture = createPlaceHolderTexture(4, 1);
+            button1 = new ImageTextureLoader().loadResource("textures/buttons/button_1_0.png");
+            button2 = new ImageTextureLoader().loadResource("textures/buttons/button_1_1.png");
+
+            Texture texture = button1;
             MenuElementLocation location = new MenuElementLocation(10, 0, 40, 10);
             elements.add(new MenuButton(location, texture));
+
         }
     }
+
 
     @Override
     public void onElementInteract(ElementInteractionEvent event) {
@@ -32,16 +40,14 @@ public class HomeScreen implements Menu, ElementInteractionListener, GraphicsCom
             //if(!elements.contains(event.getElement())) return;
             if (event instanceof ElementStopHoverEvent e) {
                 System.out.println("hover stopped");
-                elements.clear();
-                Texture texture = new ImageTextureLoader().loadResource("textures/buttons/button_1_0.png");
-                MenuElementLocation location = new MenuElementLocation(10, 0, 40, 10);
-                elements.add(new MenuButton(location, texture));
+                if(elements.getFirst() instanceof MenuButton b){
+                    b.setTexture(button1);
+                }
             } else if (event instanceof ElementStartHoverEvent e) {
                 System.out.println("hover started");
-                elements.clear();
-                Texture texture = new ImageTextureLoader().loadResource("textures/buttons/button_1_1.png");
-                MenuElementLocation location = new MenuElementLocation(10, 0, 40, 10);
-                elements.add(new MenuButton(location, texture));
+                if(elements.getFirst() instanceof MenuButton b){
+                    b.setTexture(button2);
+                }
             }
         }
     }

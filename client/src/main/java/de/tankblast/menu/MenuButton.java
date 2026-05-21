@@ -9,14 +9,16 @@ import java.util.List;
 public class MenuButton extends MenuElement {
 
     private final MenuElementLocation location;
-    private final Texture texture;
+    private Texture texture;
 
     public MenuButton(MenuElementLocation location, Texture texture) {
         this.location = location;
         this.texture = texture;
     }
 
-
+    public void setTexture(Texture texture) {
+        this.texture = texture;
+    }
 
     @Override
     public MenuElementLocation getMenuLocation() {
