@@ -1,7 +1,8 @@
 package de.tankblast.menu;
 
 import de.tankblast.menu.event.ElementClickEvent;
-import de.tankblast.menu.event.ElementHoverEvent;
+import de.tankblast.menu.event.ElementStartHoverEvent;
+import de.tankblast.menu.event.ElementStopHoverEvent;
 import de.tankblast.render.Camera;
 
 import java.awt.Component;
@@ -24,6 +25,9 @@ public class MenuController extends MouseAdapter {
     }
 
     public void setCurrentMenu(Menu menu) {
+        if (lastHovered != null && currentMenu != null) {
+            dispatch(new ElementStopHoverEvent(lastHovered, currentMenu));
+        }
         this.currentMenu = menu;
         this.lastHovered = null;
     }
@@ -39,11 +43,25 @@ public class MenuController extends MouseAdapter {
     @Override
     public void mouseMoved(MouseEvent e) {
         if (currentMenu == null) return;
-        MenuElement element = findElementAt(e);
-        if (element == lastHovered) return; // nur bei Wechsel feuern
+        updateHover(findElementAt(e));
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        if (currentMenu == null) return;
+        updateHover(null);
+    }
+
+    private void updateHover(MenuElement element) {
+        if (element == lastHovered) return;
+
+        if (lastHovered != null) {
+            dispatch(new ElementStopHoverEvent(lastHovered, currentMenu));
+        }
         lastHovered = element;
-        if (element == null) return;
-        dispatch(new ElementHoverEvent(element, currentMenu));
+        if (element != null) {
+            dispatch(new ElementStartHoverEvent(element, currentMenu));
+        }
     }
 
     private void dispatch(ElementInteractionEvent event) {
