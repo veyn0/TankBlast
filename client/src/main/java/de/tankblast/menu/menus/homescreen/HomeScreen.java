@@ -14,9 +14,9 @@ public class HomeScreen implements Menu, ElementInteractionListener, GraphicsCom
     private List<MenuElement> elements = new ArrayList<>();
 
     public HomeScreen(){
-        Texture texture = createPlaceHolderTexture();
-        MenuElementLocation location = new MenuElementLocation(0,0, 40,10);
-        elements.add(new MenuButton( location, texture));
+        Texture texture = createPlaceHolderTexture(4, 1);
+        MenuElementLocation location = new MenuElementLocation(10,0, 40,10);
+        elements.add(new MenuButton(location, texture));
     }
 
     @Override
@@ -34,12 +34,16 @@ public class HomeScreen implements Menu, ElementInteractionListener, GraphicsCom
         return List.of(this);
     }
 
-
-    private Texture createPlaceHolderTexture(){
-        int width = 20;
-        int height = 10;
+    private Texture createPlaceHolderTexture(int width, int height) {
         int[] data = new int[width * height];
-        Arrays.fill(data, 0xFF808080);
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int r = (int) (255.0 * x / Math.max(1, width - 1));
+                int g = (int) (255.0 * y / Math.max(1, height - 1));
+                int b = 128;
+                data[y * width + x] = 0xFF000000 | (r << 16) | (g << 8) | b;
+            }
+        }
         return new Texture(data, width);
     }
 
