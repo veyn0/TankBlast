@@ -45,12 +45,12 @@ public class TankBlastClientApplication {
     }
 
 
-    private List<Voxel> collectVoxels(){
-        List<Voxel> result = new ArrayList<>();
+    private void collectVoxels(){
         for(MenuElement e : currentView.getElements()){
-            result.addAll(e.getVoxel());
+            for(Voxel v : e.getVoxel()){
+                renderer.add(v);
+            }
         }
-        return result;
     }
 
 

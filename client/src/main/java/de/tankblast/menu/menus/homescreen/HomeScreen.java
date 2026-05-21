@@ -15,14 +15,13 @@ public class HomeScreen implements Menu, ElementInteractionListener, GraphicsCom
 
     public HomeScreen(){
         Texture texture = createPlaceHolderTexture();
-        MenuElementLocation location = new MenuElementLocation(0,0, 20,10);
+        MenuElementLocation location = new MenuElementLocation(0,0, 40,10);
         elements.add(new MenuButton( location, texture));
     }
 
     @Override
     public void onElementInteract(ElementInteractionEvent event) {
         if(!elements.contains(event.getElement())) return;
-
     }
 
     @Override
