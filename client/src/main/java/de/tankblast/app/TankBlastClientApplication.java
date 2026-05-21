@@ -21,6 +21,8 @@ public class TankBlastClientApplication {
 
     private Menu currentView;
 
+    private MenuController menuController;
+
     public TankBlastClientApplication(){
         this.window = new TankBlastWindow(width, height);
 
@@ -28,9 +30,9 @@ public class TankBlastClientApplication {
         this.renderer = new VoxelRenderer();
         renderer.setCamera(camera);
 
-        this.currentView = new HomeScreen();
+        this.currentView = new HomeScreen(this);
 
-        MenuController menuController = new MenuController(camera, width, height);
+        menuController = new MenuController(camera, width, height);
         menuController.setCurrentMenu(currentView);
         window.addMouseInputListener(menuController);
 
@@ -51,7 +53,9 @@ public class TankBlastClientApplication {
                         avg+=frametime;
                     }
                     avg = avg/frametimes.size();
-                    System.out.println(avg + "ms avg frametime");
+                    if(avg > 5) {
+                        System.out.println(avg + "ms avg frametime");
+                    }
                     frametimes.clear();
                 }
 
@@ -60,6 +64,10 @@ public class TankBlastClientApplication {
         }
     }
 
+    public void setCurrentView(Menu menu){
+        this.currentView = menu;
+        menuController.setCurrentMenu(menu);
+    }
 
     private void collectVoxels(){
         for(Voxel v  : currentView.getVoxel()){

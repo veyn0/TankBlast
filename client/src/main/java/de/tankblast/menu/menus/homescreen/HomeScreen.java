@@ -1,9 +1,11 @@
 package de.tankblast.menu.menus.homescreen;
 
+import de.tankblast.app.TankBlastClientApplication;
 import de.tankblast.menu.*;
 import de.tankblast.menu.event.ElementClickEvent;
 import de.tankblast.menu.event.ElementStartHoverEvent;
 import de.tankblast.menu.event.ElementStopHoverEvent;
+import de.tankblast.menu.menus.settings.SettingsScreen;
 import de.tankblast.render.GraphicsComponent;
 import de.tankblast.render.Voxel;
 import de.tankblast.texture.ImageTextureLoader;
@@ -24,10 +26,13 @@ public class HomeScreen extends Menu implements ElementInteractionListener {
 
     private BackGround background;
 
-    public HomeScreen(){
-        synchronized (lock) {
+    private TankBlastClientApplication tankBlastClientApplication;
 
-            MenuElementLocation backgroundLocation = new MenuElementLocation(-90,-50, 180,100);
+    public HomeScreen(TankBlastClientApplication tankBlastClientApplication){
+        synchronized (lock) {
+            this.tankBlastClientApplication = tankBlastClientApplication;
+
+            MenuElementLocation backgroundLocation = new MenuElementLocation(-90,-40, 180,100);
             Texture background = new ImageTextureLoader().loadResource("textures/background/background.png");
             this.background = new BackGround(backgroundLocation, background);
 
@@ -48,6 +53,7 @@ public class HomeScreen extends Menu implements ElementInteractionListener {
             MenuElementLocation settingsButtonLocation = new MenuElementLocation(-20, -10, 40, 10);
             settingsButton = new InteractableButton(settingsButtonLocation, settings0, settings1, () ->{
                 System.out.println("Clicked the Settings Button");
+                tankBlastClientApplication.setCurrentView(new SettingsScreen());
             });
             elements.add(settingsButton);
 
