@@ -1,12 +1,14 @@
 package de.tankblast.menu;
 
+import de.tankblast.render.GraphicsComponent;
+
 import java.util.List;
 
-public interface Menu {
+public abstract class Menu implements GraphicsComponent {
 
-    public List<MenuElement> getElements();
+    public abstract List<MenuElement> getElements();
 
-    public List<ElementInteractionListener> getInteractionListener();
+    public abstract List<ElementInteractionListener> getInteractionListener();
 
 
 

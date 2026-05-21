@@ -34,15 +34,27 @@ public class TankBlastClientApplication {
         menuController.setCurrentMenu(currentView);
         window.addMouseInputListener(menuController);
 
-        int i = 0;
+        long time = System.currentTimeMillis();
+        List<Integer> frametimes = new ArrayList<>();
         while (true){
             try {
-                i++;
-                //System.out.println("Frame " + i);
+                time = System.currentTimeMillis();
                 renderer.clear(Colour.GREEN);
                 collectVoxels();
                 window.showImage(renderer.render(width, height));
-//                Thread.sleep(10);
+                int frametime = Math.toIntExact(System.currentTimeMillis() - time);
+                frametimes.add(frametime);
+
+                if(frametimes.size()>=100){
+                    double avg = 0;
+                    for(int i : frametimes){
+                        avg+=frametime;
+                    }
+                    avg = avg/frametimes.size();
+                    System.out.println(avg + "ms avg frametime");
+                    frametimes.clear();
+                }
+
             } catch (Exception e){}
 
         }
@@ -50,10 +62,8 @@ public class TankBlastClientApplication {
 
 
     private void collectVoxels(){
-        for(MenuElement e : currentView.getElements()){
-            for(Voxel v : e.getVoxel()){
-                renderer.add(v);
-            }
+        for(Voxel v  : currentView.getVoxel()){
+            renderer.add(v);
         }
     }
 
