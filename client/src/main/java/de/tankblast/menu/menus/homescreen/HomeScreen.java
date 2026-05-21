@@ -1,6 +1,8 @@
 package de.tankblast.menu.menus.homescreen;
 
 import de.tankblast.menu.*;
+import de.tankblast.menu.event.ElementClickEvent;
+import de.tankblast.menu.event.ElementHoverEvent;
 import de.tankblast.render.GraphicsComponent;
 import de.tankblast.render.Voxel;
 import de.tankblast.texture.Texture;
@@ -22,6 +24,20 @@ public class HomeScreen implements Menu, ElementInteractionListener, GraphicsCom
     @Override
     public void onElementInteract(ElementInteractionEvent event) {
         if(!elements.contains(event.getElement())) return;
+        if(event instanceof ElementClickEvent e) {
+            System.out.println("clicked");
+            elements.clear();
+            Texture texture = createPlaceHolderTexture(4, 1);
+            MenuElementLocation location = new MenuElementLocation(10,0, 40,10);
+            elements.add(new MenuButton(location, texture));
+        }
+        else if (event instanceof ElementHoverEvent e){
+            System.out.println("hovered");
+            elements.clear();
+            Texture texture = createPlaceHolderTexture(16, 4);
+            MenuElementLocation location = new MenuElementLocation(10,0, 40,10);
+            elements.add(new MenuButton(location, texture));
+        }
     }
 
     @Override

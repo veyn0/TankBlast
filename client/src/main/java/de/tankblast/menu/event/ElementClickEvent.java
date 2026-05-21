@@ -17,12 +17,12 @@ public class ElementClickEvent implements ElementInteractionEvent {
 
     @Override
     public MenuElement getElement() {
-        return null;
+        return element;
     }
 
     @Override
     public Menu getMenu() {
-        return null;
+        return menu;
     }
 
 }

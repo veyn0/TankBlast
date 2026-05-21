@@ -2,6 +2,7 @@ package de.tankblast.view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
 import java.awt.image.BufferedImage;
 
 public class TankBlastWindow extends JFrame implements BufferedImageDisplay {
@@ -24,6 +25,11 @@ public class TankBlastWindow extends JFrame implements BufferedImageDisplay {
     public void showImage(BufferedImage bufferedImage) {
         renderPanel.setFrame(bufferedImage);
         renderPanel.repaint();
+    }
+
+    public void addMouseInputListener(MouseAdapter listener) {
+        renderPanel.addMouseListener(listener);
+        renderPanel.addMouseMotionListener(listener);
     }
 
 }

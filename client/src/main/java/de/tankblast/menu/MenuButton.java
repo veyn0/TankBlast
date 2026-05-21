@@ -16,6 +16,8 @@ public class MenuButton extends MenuElement {
         this.texture = texture;
     }
 
+
+
     @Override
     public MenuElementLocation getMenuLocation() {
         return location;
