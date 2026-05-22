@@ -23,6 +23,7 @@ public class HomeScreen extends Menu implements ElementInteractionListener {
 
     private InteractableButton playButton;
     private InteractableButton settingsButton;
+    private InteractableButton quitButton;
 
     private BackGround background;
 
@@ -43,20 +44,31 @@ public class HomeScreen extends Menu implements ElementInteractionListener {
             Texture play1 = new ImageTextureLoader().loadResource("textures/buttons/button_play_1.png");
             Texture settings0 = new ImageTextureLoader().loadResource("textures/buttons/button_settings_0.png");
             Texture settings1 = new ImageTextureLoader().loadResource("textures/buttons/button_settings_1.png");
+            Texture quit0 = new ImageTextureLoader().loadResource("textures/buttons/button_quit_0.png");
+            Texture quit1 = new ImageTextureLoader().loadResource("textures/buttons/button_quit_1.png");
+
+
 
             MenuElementLocation playButtonLocation = new MenuElementLocation(-20, 10, 40, 10);
-            playButton = new InteractableButton(playButtonLocation, play0, play1, () ->{
+            playButton = new InteractableButton(playButtonLocation, play1, play0, () ->{
                 System.out.println("Clicked the Play Button");
             });
             elements.add(playButton);
 
             MenuElementLocation settingsButtonLocation = new MenuElementLocation(-20, -10, 40, 10);
-            settingsButton = new InteractableButton(settingsButtonLocation, settings0, settings1, () ->{
+            settingsButton = new InteractableButton(settingsButtonLocation, settings1, settings0,  () ->{
                 System.out.println("Clicked the Settings Button");
-                tankBlastClientApplication.setCurrentView(new SettingsScreen());
+                //TODO: move SettingsScreen initialization to TankBlastClientApplication or other.
+                SettingsScreen settingsScreen = new SettingsScreen(tankBlastClientApplication, this);
+                tankBlastClientApplication.setCurrentView(settingsScreen);
             });
             elements.add(settingsButton);
 
+            MenuElementLocation quitButtonLocation = new MenuElementLocation(-20, -30, 40, 10);
+            quitButton = new InteractableButton(quitButtonLocation,quit1, quit0, ()->{
+                tankBlastClientApplication.exit();
+            });
+            elements.add(quitButton);
 
         }
     }
@@ -67,6 +79,7 @@ public class HomeScreen extends Menu implements ElementInteractionListener {
         synchronized (lock) {
             playButton.onElementInteractionEvent(event);
             settingsButton.onElementInteractionEvent(event);
+            quitButton.onElementInteractionEvent(event);
         }
     }
 

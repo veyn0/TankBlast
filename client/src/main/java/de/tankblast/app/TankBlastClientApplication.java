@@ -8,6 +8,7 @@ import de.tankblast.render.*;
 import de.tankblast.texture.Colour;
 import de.tankblast.view.TankBlastWindow;
 
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,8 @@ public class TankBlastClientApplication {
     private Menu currentView;
 
     private MenuController menuController;
+
+    private volatile boolean running = true;
 
     public TankBlastClientApplication(){
         this.window = new TankBlastWindow(width, height);
@@ -38,7 +41,7 @@ public class TankBlastClientApplication {
 
         long time = System.currentTimeMillis();
         List<Integer> frametimes = new ArrayList<>();
-        while (true){
+        while (running){
             try {
                 time = System.currentTimeMillis();
                 renderer.clear(Colour.GREEN);
@@ -75,5 +78,8 @@ public class TankBlastClientApplication {
         }
     }
 
-
+    public void exit(){
+        this.running = false;
+        window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
+    }
 }
