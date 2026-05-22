@@ -56,7 +56,7 @@ public class TankBlastClientApplication {
                     }
                     avg = avg/frametimes.size();
                     if(avg > 5) {
-                        System.out.println(avg + "ms avg frametime");
+                       // System.out.println(avg + "ms avg frametime");
                     }
                     frametimes.clear();
                 }

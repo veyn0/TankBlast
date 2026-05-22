@@ -10,6 +10,10 @@ import java.util.List;
 
 public class Slider extends MenuButton {
 
+    /*
+    TODO: slider texture is currently requiered in the same size as background.
+     */
+
     private int stepCount;
     private Texture texture;
     private int currentStep;
@@ -26,8 +30,10 @@ public class Slider extends MenuButton {
         if(event instanceof ElementClickEvent e){
             MenuElementLocation elementLocation = super.getMenuLocation();
             MouseLocation mouseLocation = e.getMouseLocation();
-            double stepPerUnit = stepCount / elementLocation.getWidth();
-            currentStep = (int)(mouseLocation.getX()*stepPerUnit);
+            double stepPerUnit = (stepCount + 1) / elementLocation.getWidth();
+            int step = (int)(mouseLocation.getX() * stepPerUnit);
+            currentStep = Math.clamp(step, 0, stepCount);
+            System.out.println(currentStep);
         }
     }
 
@@ -45,7 +51,7 @@ public class Slider extends MenuButton {
 
         MenuElementLocation elementLocation = super.getMenuLocation();
         double unitPerStep = elementLocation.getWidth() / stepCount;
-        double currentXOffset = (unitPerStep * currentStep) - (unitPerStep / 2);
+        double currentXOffset = (unitPerStep * currentStep) - (unitPerStep /2);
         MenuElementLocation location = new MenuElementLocation(elementLocation.getX() + currentXOffset, elementLocation.getY(), elementLocation.getWidth(), elementLocation.getHeight());
 
         double pixelSize = location.getWidth() / texWidth;
