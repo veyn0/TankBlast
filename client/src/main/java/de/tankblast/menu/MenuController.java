@@ -35,7 +35,7 @@ public class MenuController extends MouseAdapter {
     @Override
     public void mouseClicked(MouseEvent e) {
         if (currentMenu == null) return;
-        MenuElement element = findElementAt(e);
+        MenuElement element = findElementAt(e).getElement();
         if (element == null) return;
         dispatch(new ElementClickEvent(element, currentMenu));
     }
@@ -43,7 +43,7 @@ public class MenuController extends MouseAdapter {
     @Override
     public void mouseMoved(MouseEvent e) {
         if (currentMenu == null) return;
-        updateHover(findElementAt(e));
+        updateHover(findElementAt(e).getElement());
     }
 
     @Override
@@ -70,7 +70,7 @@ public class MenuController extends MouseAdapter {
         }
     }
 
-    private MenuElement findElementAt(MouseEvent e) {
+    private MouseLocation findElementAt(MouseEvent e) {
         Component source = e.getComponent();
 
         // Panel-Pixel -> Image-Pixel (RenderPanel skaliert das Bild auf seine Größe)
@@ -85,9 +85,12 @@ public class MenuController extends MouseAdapter {
         for (MenuElement el : currentMenu.getElements()) {
             MenuElementLocation loc = el.getMenuLocation();
             if (loc != null && loc.isBetween(worldX, worldY)) {
-                return el;
+                double elementX = 0;
+                double elementY = 0;
+                return new MouseLocation(el, elementX, elementY);
             }
         }
         return null;
     }
+
 }
