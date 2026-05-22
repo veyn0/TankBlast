@@ -49,7 +49,7 @@ public class SettingsScreen extends Menu implements ElementInteractionListener {
             MenuElementLocation volumeLocation = new MenuElementLocation(-40,-10, 80,10);
             Texture volumeSliderTexture = new ImageTextureLoader().loadResource("textures/slider/slider.png");
             Texture volumeSliderHeadTexture = new ImageTextureLoader().loadResource("textures/slider/slider_head.png");
-            volumeSlider = new Slider(volumeLocation, volumeSliderTexture, volumeSliderHeadTexture, 10, 10);
+            volumeSlider = new Slider(volumeLocation, volumeSliderTexture, volumeSliderHeadTexture, 100, 50);
             elements.add(volumeSlider);
         }
     }

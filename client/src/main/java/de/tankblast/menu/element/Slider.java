@@ -12,6 +12,7 @@ public class Slider extends MenuButton {
 
     /*
     TODO: slider texture is currently requiered in the same size as background.
+     - add deadzone
      */
 
     private int stepCount;
@@ -24,7 +25,7 @@ public class Slider extends MenuButton {
         this.stepCount = stepCount;
         this.texture = sliderTexture;
         this.currentStep = initialValue;
-        this.offset = 2;
+        this.offset = 3;
     }
 
     public void onEvent(ElementInteractionEvent event){
@@ -32,7 +33,7 @@ public class Slider extends MenuButton {
         if(event instanceof ElementClickEvent e){
             MenuElementLocation elementLocation = super.getMenuLocation();
             MouseLocation mouseLocation = e.getMouseLocation();
-            double stepPerUnit = (stepCount + 1) / elementLocation.getWidth();
+            double stepPerUnit = (stepCount) / elementLocation.getWidth();
             int step = (int)(mouseLocation.getX() * stepPerUnit);
             currentStep = Math.clamp(step, 0, stepCount);
             System.out.println(currentStep);
@@ -53,7 +54,7 @@ public class Slider extends MenuButton {
 
         MenuElementLocation elementLocation = super.getMenuLocation();
         double unitPerStep = elementLocation.getWidth() / stepCount;
-        double currentXOffset = (unitPerStep * currentStep);
+        double currentXOffset = (unitPerStep * currentStep) - offset;
         MenuElementLocation location = new MenuElementLocation(elementLocation.getX() + currentXOffset, elementLocation.getY(), elementLocation.getWidth(), elementLocation.getHeight());
 
         double pixelSize = location.getWidth() / texWidth;
