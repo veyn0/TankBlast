@@ -1,6 +1,7 @@
 package de.tankblast.menu.element;
 
 import de.tankblast.menu.MenuButton;
+import de.tankblast.menu.event.ElementClickEvent;
 import de.tankblast.render.Voxel;
 import de.tankblast.texture.Texture;
 
@@ -21,9 +22,13 @@ public class Slider extends MenuButton {
     }
 
     public void onEvent(ElementInteractionEvent event){
-
-
-
+        if(event.getElement() != this) return;
+        if(event instanceof ElementClickEvent e){
+            MenuElementLocation elementLocation = super.getMenuLocation();
+            MouseLocation mouseLocation = e.getMouseLocation();
+            double stepPerUnit = stepCount / elementLocation.getWidth();
+            currentStep = (int)(mouseLocation.getX()*stepPerUnit);
+        }
     }
 
     @Override
@@ -34,13 +39,13 @@ public class Slider extends MenuButton {
     }
 
     private List<Voxel> getSlider(){
-        int texWidth  = texture.getWidth();
+        int texWidth = texture.getWidth();
         int texHeight = texture.getHeight();
-        int[] data    = texture.getData();
+        int[] data = texture.getData();
 
         MenuElementLocation elementLocation = super.getMenuLocation();
         double unitPerStep = elementLocation.getWidth() / stepCount;
-        double currentXOffset = (unitPerStep * currentStep) - (unitPerStep/2);
+        double currentXOffset = (unitPerStep * currentStep) - (unitPerStep / 2);
         MenuElementLocation location = new MenuElementLocation(elementLocation.getX() + currentXOffset, elementLocation.getY(), elementLocation.getWidth(), elementLocation.getHeight());
 
         double pixelSize = location.getWidth() / texWidth;
@@ -49,6 +54,7 @@ public class Slider extends MenuButton {
         for (int py = 0; py < texHeight; py++) {
             for (int px = 0; px < texWidth; px++) {
                 int colour = data[py * texWidth + px];
+                if ((colour >>> 24) == 0) continue;
 
                 double worldX = location.getX() + (px + 0.5) * pixelSize;
                 double worldY = location.getY() + location.getHeight() - (py + 0.5) * pixelSize;

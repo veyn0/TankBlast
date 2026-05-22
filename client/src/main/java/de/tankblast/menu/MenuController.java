@@ -37,7 +37,7 @@ public class MenuController extends MouseAdapter {
     public void mouseClicked(MouseEvent e) {
         if (currentMenu == null) return;
         MouseLocation element = findElementAt(e);
-        if (element == null) return;
+        if (element.getElement() == null) return;
         dispatch(new ElementClickEvent(element, currentMenu));
     }
 
@@ -91,7 +91,7 @@ public class MenuController extends MouseAdapter {
                 return new MouseLocation(el, elementX, elementY);
             }
         }
-        return null;
+        return new MouseLocation(null, worldX, worldY);
     }
 
 }

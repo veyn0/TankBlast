@@ -19,6 +19,8 @@ public class SettingsScreen extends Menu implements ElementInteractionListener {
 
     private InteractableButton backButton;
 
+    private Slider volumeSlider;
+
     private BackGround background;
 
     private TankBlastClientApplication tankBlastClientApplication;
@@ -43,6 +45,12 @@ public class SettingsScreen extends Menu implements ElementInteractionListener {
             });
             elements.add(backButton);
 
+
+            MenuElementLocation volumeLocation = new MenuElementLocation(-40,-10, 80,10);
+            Texture volumeSliderTexture = new ImageTextureLoader().loadResource("textures/slider/slider.png");
+            Texture volumeSliderHeadTexture = new ImageTextureLoader().loadResource("textures/slider/slider_head.png");
+            volumeSlider = new Slider(volumeLocation, volumeSliderTexture, volumeSliderHeadTexture, 10, 0);
+            elements.add(volumeSlider);
         }
     }
 
@@ -50,6 +58,7 @@ public class SettingsScreen extends Menu implements ElementInteractionListener {
     public void onElementInteract(ElementInteractionEvent event) {
         synchronized (lock) {
             backButton.onElementInteractionEvent(event);
+            volumeSlider.onEvent(event);
         }
     }
 
