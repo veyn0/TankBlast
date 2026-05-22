@@ -1,11 +1,12 @@
-package de.tankblast.menu;
+package de.tankblast.menu.element;
 
+import de.tankblast.menu.MenuButton;
 import de.tankblast.menu.event.ElementClickEvent;
 import de.tankblast.menu.event.ElementStartHoverEvent;
 import de.tankblast.menu.event.ElementStopHoverEvent;
 import de.tankblast.texture.Texture;
 
-public class InteractableButton extends MenuButton{
+public class InteractableButton extends MenuButton {
 
     private Texture hoverTexture;
     private Texture texture;

@@ -1,4 +1,4 @@
-package de.tankblast.menu;
+package de.tankblast.menu.element;
 
 public class MenuElementLocation {
     private double x, y, width, height;

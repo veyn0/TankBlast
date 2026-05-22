@@ -2,6 +2,7 @@ package de.tankblast.menu.menus.settings;
 
 import de.tankblast.app.TankBlastClientApplication;
 import de.tankblast.menu.*;
+import de.tankblast.menu.element.*;
 import de.tankblast.menu.menus.homescreen.HomeScreen;
 import de.tankblast.render.Voxel;
 import de.tankblast.texture.ImageTextureLoader;

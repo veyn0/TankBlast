@@ -2,15 +2,11 @@ package de.tankblast.menu.menus.homescreen;
 
 import de.tankblast.app.TankBlastClientApplication;
 import de.tankblast.menu.*;
-import de.tankblast.menu.event.ElementClickEvent;
-import de.tankblast.menu.event.ElementStartHoverEvent;
-import de.tankblast.menu.event.ElementStopHoverEvent;
+import de.tankblast.menu.element.*;
 import de.tankblast.menu.menus.settings.SettingsScreen;
-import de.tankblast.render.GraphicsComponent;
 import de.tankblast.render.Voxel;
 import de.tankblast.texture.ImageTextureLoader;
 import de.tankblast.texture.Texture;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,0 +1,62 @@
+package de.tankblast.menu.element;
+
+import de.tankblast.menu.MenuButton;
+import de.tankblast.render.Voxel;
+import de.tankblast.texture.Texture;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Slider extends MenuButton {
+
+    private int stepCount;
+    private Texture texture;
+    private int currentStep;
+
+    public Slider(MenuElementLocation location, Texture texture, Texture sliderTexture, int stepCount, int initialValue) {
+        super(location, texture);
+        this.stepCount = stepCount;
+        this.texture = sliderTexture;
+        this.currentStep = initialValue;
+    }
+
+    public void onEvent(ElementInteractionEvent event){
+
+
+
+    }
+
+    @Override
+    public List<Voxel> getVoxel(){
+        List<Voxel> result = new ArrayList<>(super.getVoxel());
+        result.addAll(getSlider());
+        return result;
+    }
+
+    private List<Voxel> getSlider(){
+        int texWidth  = texture.getWidth();
+        int texHeight = texture.getHeight();
+        int[] data    = texture.getData();
+
+        MenuElementLocation elementLocation = super.getMenuLocation();
+        double unitPerStep = elementLocation.getWidth() / stepCount;
+        double currentXOffset = (unitPerStep * currentStep) - (unitPerStep/2);
+        MenuElementLocation location = new MenuElementLocation(elementLocation.getX() + currentXOffset, elementLocation.getY(), elementLocation.getWidth(), elementLocation.getHeight());
+
+        double pixelSize = location.getWidth() / texWidth;
+
+        List<Voxel> result = new ArrayList<>(texWidth * texHeight);
+        for (int py = 0; py < texHeight; py++) {
+            for (int px = 0; px < texWidth; px++) {
+                int colour = data[py * texWidth + px];
+
+                double worldX = location.getX() + (px + 0.5) * pixelSize;
+                double worldY = location.getY() + location.getHeight() - (py + 0.5) * pixelSize;
+
+                result.add(new Voxel(colour, worldX, worldY, pixelSize, 0));
+            }
+        }
+        return result;
+    }
+
+}

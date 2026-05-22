@@ -1,4 +1,6 @@
-package de.tankblast.menu;
+package de.tankblast.menu.element;
+
+import de.tankblast.menu.Menu;
 
 public interface ElementInteractionEvent {
 

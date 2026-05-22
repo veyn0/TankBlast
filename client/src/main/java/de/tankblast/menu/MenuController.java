@@ -1,5 +1,6 @@
 package de.tankblast.menu;
 
+import de.tankblast.menu.element.*;
 import de.tankblast.menu.event.ElementClickEvent;
 import de.tankblast.menu.event.ElementStartHoverEvent;
 import de.tankblast.menu.event.ElementStopHoverEvent;
@@ -35,7 +36,7 @@ public class MenuController extends MouseAdapter {
     @Override
     public void mouseClicked(MouseEvent e) {
         if (currentMenu == null) return;
-        MenuElement element = findElementAt(e).getElement();
+        MouseLocation element = findElementAt(e);
         if (element == null) return;
         dispatch(new ElementClickEvent(element, currentMenu));
     }
@@ -85,8 +86,8 @@ public class MenuController extends MouseAdapter {
         for (MenuElement el : currentMenu.getElements()) {
             MenuElementLocation loc = el.getMenuLocation();
             if (loc != null && loc.isBetween(worldX, worldY)) {
-                double elementX = 0;
-                double elementY = 0;
+                double elementX = worldX - loc.getX();
+                double elementY = worldY - loc.getY();
                 return new MouseLocation(el, elementX, elementY);
             }
         }

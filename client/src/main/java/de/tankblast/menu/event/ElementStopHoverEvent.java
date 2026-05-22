@@ -1,8 +1,8 @@
 package de.tankblast.menu.event;
 
-import de.tankblast.menu.ElementInteractionEvent;
+import de.tankblast.menu.element.ElementInteractionEvent;
 import de.tankblast.menu.Menu;
-import de.tankblast.menu.MenuElement;
+import de.tankblast.menu.element.MenuElement;
 
 public class ElementStopHoverEvent implements ElementInteractionEvent {
 

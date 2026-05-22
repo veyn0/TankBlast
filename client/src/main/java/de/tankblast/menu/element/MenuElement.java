@@ -1,8 +1,6 @@
-package de.tankblast.menu;
+package de.tankblast.menu.element;
 
 import de.tankblast.render.GraphicsComponent;
-
-import java.util.List;
 
 public abstract class MenuElement implements GraphicsComponent {
 
