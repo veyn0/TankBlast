@@ -13,6 +13,8 @@ public class NetworkManager {
 
     private WireWay wireWay;
 
+    private StatusNetworkController statusNetworkController;
+
     public NetworkManager(String host, int port){
 
 
@@ -28,5 +30,9 @@ public class NetworkManager {
         return configurationPacketStream;
     }
 
+
+    public StatusNetworkController getStatusNetworkController() {
+        return statusNetworkController;
+    }
 
 }

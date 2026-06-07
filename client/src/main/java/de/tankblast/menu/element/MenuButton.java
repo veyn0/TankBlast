@@ -1,7 +1,5 @@
-package de.tankblast.menu;
+package de.tankblast.menu.element;
 
-import de.tankblast.menu.element.MenuElement;
-import de.tankblast.menu.element.MenuElementLocation;
 import de.tankblast.render.Voxel;
 import de.tankblast.texture.Texture;
 

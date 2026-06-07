@@ -43,11 +43,9 @@ public class HomeScreen extends Menu implements ElementInteractionListener {
             Texture quit0 = new ImageTextureLoader().loadResource("textures/buttons/button_quit_0.png");
             Texture quit1 = new ImageTextureLoader().loadResource("textures/buttons/button_quit_1.png");
 
-
-
             MenuElementLocation playButtonLocation = new MenuElementLocation(-20, 10, 40, 10);
             playButton = new InteractableButton(playButtonLocation, play1, play0, () ->{
-                System.out.println("Clicked the Play Button");
+                tankBlastClientApplication.setCurrentView(tankBlastClientApplication.createAvailableGamesScreen());
             });
             elements.add(playButton);
 

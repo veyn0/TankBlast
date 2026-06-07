@@ -25,4 +25,5 @@ public class ImageTextureLoader {
             throw new RuntimeException("Failed to load texture: " + path, e);
         }
     }
+
 }

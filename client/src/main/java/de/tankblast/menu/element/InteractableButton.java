@@ -1,6 +1,5 @@
 package de.tankblast.menu.element;
 
-import de.tankblast.menu.MenuButton;
 import de.tankblast.menu.event.ElementClickEvent;
 import de.tankblast.menu.event.ElementStartHoverEvent;
 import de.tankblast.menu.event.ElementStopHoverEvent;
