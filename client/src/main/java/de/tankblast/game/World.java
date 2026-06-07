@@ -4,13 +4,26 @@ import de.tankblast.model.entity.Entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class World {
 
-    private List<Entity> entities = new ArrayList<>();
+    private final List<Entity> entities = new CopyOnWriteArrayList<>();
 
     public List<Entity> getEntities() {
         return entities;
     }
 
+    public void addEntity(Entity entity) {
+        entities.add(entity);
+    }
+
+    public void removeEntity(Entity entity) {
+        entities.remove(entity);
+    }
+
+    /** Immutable snapshot for the render thread. */
+    public List<Entity> snapshot() {
+        return new ArrayList<>(entities);
+    }
 }

@@ -19,23 +19,32 @@ public class InputMapper {
     }
 
     public static float getMovementPercentage(InputContext inputContext){
-        return (float) Math.clamp((getForwardKeyPercentage(inputContext) - getBackwardKeyPercentage(inputContext)) , -1, 1);
+        return (float) Math.clamp((getForwardKeyPercentage(inputContext) - getBackwardKeyPercentage(inputContext)), -1, 1);
     }
 
     public static float getRotationPercentage(InputContext inputContext){
-        return (float) Math.clamp((getRotateRightKeyPercentage(inputContext) - getRotateLeftKeyPercentage(inputContext)) , -1, 1);
+        return (float) Math.clamp((getRotateRightKeyPercentage(inputContext) - getRotateLeftKeyPercentage(inputContext)), -1, 1);
     }
 
     public static double getRotationDegrees(InputContext inputContext, double rotationSpeed){
-        return (rotationSpeed * inputContext.getTimeSinceLastTickNanos()/1_000_000) * getRotationPercentage(inputContext);
+        return (rotationSpeed * inputContext.getTimeSinceLastTickNanos() / 1_000_000_000.0) * getRotationPercentage(inputContext);
     }
 
     public static double getMovementDistance(InputContext inputContext, double movementSpeed){
-        return (movementSpeed * inputContext.getTimeSinceLastTickNanos()/1_000_000) * getMovementPercentage(inputContext);
+        return (movementSpeed * inputContext.getTimeSinceLastTickNanos() / 1_000_000_000.0) * getMovementPercentage(inputContext);
+    }
+
+    public static boolean isShootPressed(InputContext inputContext){
+        Long pressed = inputContext.getKeyStrokes().get(Key.SPACE.getKeyCode());
+        return pressed != null && pressed > 0;
     }
 
     private static float getKeyPressedPercentage(InputContext inputContext, Key key){
-        return (float) Math.clamp(inputContext.getTimeSinceLastTickNanos() / inputContext.getKeyStrokes().get(key.getKeyCode()), 0, 1);
+        Long pressedNanos = inputContext.getKeyStrokes().get(key.getKeyCode());
+        if (pressedNanos == null) return 0f;
+        long tickNanos = inputContext.getTimeSinceLastTickNanos();
+        if (tickNanos <= 0) return 0f;
+        return (float) Math.clamp((double) pressedNanos / (double) tickNanos, 0, 1);
     }
 
 }

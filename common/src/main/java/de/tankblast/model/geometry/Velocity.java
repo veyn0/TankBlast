@@ -20,4 +20,19 @@ public class Velocity {
     public Velocity copy(Vector direction){
         return new Velocity(direction, speed);
     }
+
+    public Vector getDirection() {
+        return direction;
+    }
+
+    public double getSpeed() {
+        return speed;
+    }
+
+    /**
+     * The velocity as a displacement vector: direction (normalized) * speed.
+     */
+    public Vector asVector(){
+        return direction.normalized().scale(speed);
+    }
 }

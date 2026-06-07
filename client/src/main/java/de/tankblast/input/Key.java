@@ -1,13 +1,15 @@
 package de.tankblast.input;
 
-public enum Key {
-    W(1),
-    A(2),
-    S(3),
-    D(4),
-    SPACE(5);
+import java.awt.event.KeyEvent;
 
-    private int keyCode;
+public enum Key {
+    W(KeyEvent.VK_W),
+    A(KeyEvent.VK_A),
+    S(KeyEvent.VK_S),
+    D(KeyEvent.VK_D),
+    SPACE(KeyEvent.VK_SPACE);
+
+    private final int keyCode;
 
     Key(int keyCode){
         this.keyCode = keyCode;

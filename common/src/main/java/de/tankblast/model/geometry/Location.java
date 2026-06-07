@@ -22,4 +22,11 @@ public class Location {
         return new Location(position.copy(), velocity);
     }
 
+    public Vector getPosition() {
+        return position;
+    }
+
+    public Velocity getVelocity() {
+        return velocity;
+    }
 }

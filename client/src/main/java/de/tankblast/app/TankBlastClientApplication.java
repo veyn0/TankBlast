@@ -1,5 +1,7 @@
 package de.tankblast.app;
 
+import de.tankblast.input.InputListener;
+import de.tankblast.input.InputManager;
 import de.tankblast.menu.Menu;
 import de.tankblast.menu.MenuController;
 import de.tankblast.menu.menus.homescreen.HomeScreen;
@@ -37,6 +39,10 @@ public class TankBlastClientApplication {
 
     private LobbyScreenManager lobbyScreenManager;
 
+    private InputManager inputManager;
+
+    private GameSessionManager gameSessionManager;
+
     public TankBlastClientApplication(){
         this.networkManager = new NetworkManager("w", 1);
         this.availableGamesScreenManager = new AvailableGamesScreenManager(this);
@@ -44,7 +50,15 @@ public class TankBlastClientApplication {
         this.lobbyScreenManager = new LobbyScreenManager(this);
         this.window = new TankBlastWindow(width, height);
 
-        Camera camera = new PlayerCenteredCamera();
+        // Input layer: the manager collects key timings, the listener feeds it
+        // AWT key events, and focus loss clears any held keys.
+        this.inputManager = new InputManager();
+        window.addKeyInputListener(new InputListener(inputManager));
+        window.addFocusLossHandler(inputManager::onWindowOutOfFocus);
+
+        PlayerCenteredCamera camera = new PlayerCenteredCamera();
+        this.gameSessionManager = new GameSessionManager(this, inputManager, camera);
+
         this.renderer = new VoxelRenderer();
         renderer.setCamera(camera);
 
@@ -58,6 +72,7 @@ public class TankBlastClientApplication {
             try {
                 time = System.currentTimeMillis();
                 renderer.clear(Colour.GREEN);
+                gameSessionManager.updateCamera();
                 collectVoxels();
                 window.showImage(renderer.render(width, height));
                 int frametime = Math.toIntExact(System.currentTimeMillis() - time);
@@ -70,7 +85,7 @@ public class TankBlastClientApplication {
                     }
                     avg = avg/frametimes.size();
                     if(avg > 5) {
-                       // System.out.println(avg + "ms avg frametime");
+                        // System.out.println(avg + "ms avg frametime");
                     }
                     frametimes.clear();
                 }
@@ -85,14 +100,33 @@ public class TankBlastClientApplication {
         menuController.setCurrentMenu(menu);
     }
 
+    /**
+     * Starts a (client-side) game session. The session runs its own fixed-step
+     * loop; rendering of its entities is picked up by {@link #collectVoxels()}.
+     */
+    public void startGameSession(){
+        gameSessionManager.startGameSession();
+    }
+
+    public void stopGameSession(){
+        gameSessionManager.stopGameSession();
+    }
+
     private void collectVoxels(){
-        for(Voxel v  : currentView.getVoxel()){
-            renderer.add(v);
+        if (currentView != null) {
+            for(Voxel v  : currentView.getVoxel()){
+                renderer.add(v);
+            }
+        }
+        // Decoupled from the game tick: read whatever the session currently holds.
+        for (GraphicsComponent component : gameSessionManager.getGraphicsComponents()) {
+            renderer.add(component);
         }
     }
 
     public void exit(){
         this.running = false;
+        gameSessionManager.stopGameSession();
         window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
     }
 
@@ -104,7 +138,6 @@ public class TankBlastClientApplication {
         return networkManager;
     }
 
-
     public CreateLobbyScreenManager getCreateLobbyScreenManager() {
         return createLobbyScreenManager;
     }
@@ -115,5 +148,9 @@ public class TankBlastClientApplication {
 
     public LobbyScreenManager getLobbyScreen() {
         return lobbyScreenManager;
+    }
+
+    public GameSessionManager getGameSessionManager() {
+        return gameSessionManager;
     }
 }

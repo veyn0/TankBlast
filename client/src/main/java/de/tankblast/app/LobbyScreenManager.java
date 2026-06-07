@@ -37,7 +37,7 @@ public class LobbyScreenManager {
                     new ImageTextureLoader().loadResource("textures/buttons/multiplayer/start.png"),
                     new ImageTextureLoader().loadResource("textures/buttons/multiplayer/start_hover.png"),
                     () ->{
-
+                        clientApplication.startGameSession();
                         System.out.println("game started");
 
                     })
