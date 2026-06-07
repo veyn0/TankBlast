@@ -45,7 +45,7 @@ public class HomeScreen extends Menu implements ElementInteractionListener {
 
             MenuElementLocation playButtonLocation = new MenuElementLocation(-20, 10, 40, 10);
             playButton = new InteractableButton(playButtonLocation, play1, play0, () ->{
-                tankBlastClientApplication.setCurrentView(tankBlastClientApplication.createAvailableGamesScreen());
+                tankBlastClientApplication.setCurrentView(tankBlastClientApplication.getAvailableGamesScreenManager().createAvailableGamesScreen());
             });
             elements.add(playButton);
 

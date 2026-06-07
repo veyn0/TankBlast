@@ -1,15 +1,15 @@
-package de.tankblast.protocol.dto;
+package de.tankblast.protocol.dto.game.available;
 
 import xyz.wireway.service.BufferSerializable;
 import xyz.wireway.service.PacketBuffer;
 
 public class AvailableGame implements BufferSerializable {
 
-    private int id, playerCount, maxPlayerCount, map;
+    private int lobbyId, playerCount, maxPlayerCount, map;
     private String name;
 
-    public AvailableGame(int id, int playerCount, int map, String name, int maxPlayerCount) {
-        this.id = id;
+    public AvailableGame(int lobbyId, int playerCount, int map, String name, int maxPlayerCount) {
+        this.lobbyId = lobbyId;
         this.playerCount = playerCount;
         this.map = map;
         this.name = name;
@@ -22,8 +22,8 @@ public class AvailableGame implements BufferSerializable {
         return maxPlayerCount;
     }
 
-    public int getId() {
-        return id;
+    public int getLobbyId() {
+        return lobbyId;
     }
 
     public int getPlayerCount() {
@@ -40,7 +40,7 @@ public class AvailableGame implements BufferSerializable {
 
     @Override
     public void write(PacketBuffer packetBuffer) {
-        packetBuffer.writeInt(id);
+        packetBuffer.writeInt(lobbyId);
         packetBuffer.writeInt(playerCount);
         packetBuffer.writeInt(map);
         packetBuffer.writeInt(maxPlayerCount);

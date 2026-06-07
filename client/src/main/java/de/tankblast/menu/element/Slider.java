@@ -6,6 +6,7 @@ import de.tankblast.texture.Texture;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class Slider extends MenuButton {
 
@@ -19,11 +20,14 @@ public class Slider extends MenuButton {
     private int currentStep;
     private int offset;
 
-    public Slider(MenuElementLocation location, Texture texture, Texture sliderTexture, int stepCount, int initialValue) {
+    private final Consumer<Integer> onStep;
+
+    public Slider(MenuElementLocation location, Texture texture, Texture sliderTexture, int stepCount, int initialValue, Consumer<Integer> onStep) {
         super(location, texture);
         this.stepCount = stepCount;
         this.texture = sliderTexture;
         this.currentStep = initialValue;
+        this.onStep = onStep;
         this.offset = 3;
     }
 
@@ -35,7 +39,7 @@ public class Slider extends MenuButton {
             double stepPerUnit = (stepCount) / elementLocation.getWidth();
             int step = (int)(mouseLocation.getX() * stepPerUnit);
             currentStep = Math.clamp(step, 0, stepCount);
-            System.out.println(currentStep);
+            onStep.accept(currentStep);
         }
     }
 

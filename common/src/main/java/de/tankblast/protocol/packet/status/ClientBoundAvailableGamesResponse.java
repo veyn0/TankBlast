@@ -1,6 +1,6 @@
 package de.tankblast.protocol.packet.status;
 
-import de.tankblast.protocol.dto.AvailableGame;
+import de.tankblast.protocol.dto.game.available.AvailableGame;
 import xyz.wireway.protocol.Packet;
 import xyz.wireway.protocol.PacketId;
 import xyz.wireway.service.PacketBuffer;
