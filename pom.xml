@@ -20,4 +20,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+
+
+    <dependencies>
+        <dependency>
+            <groupId>xyz.wireway</groupId>
+            <artifactId>WireWay</artifactId>
+            <version>0.1-ALPHA</version>
+        </dependency>
+    </dependencies>
+
 </project>
