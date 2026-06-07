@@ -14,4 +14,21 @@ public class CreateLobbyRequest {
         this.playerCount = playerCount;
         this.map = map;
     }
+
+
+    public UUID getPlayerId() {
+        return playerId;
+    }
+
+    public String getGameName() {
+        return gameName;
+    }
+
+    public int getPlayerCount() {
+        return playerCount;
+    }
+
+    public int getMap() {
+        return map;
+    }
 }

@@ -38,6 +38,7 @@ public class TankBlastClientApplication {
     private LobbyScreenManager lobbyScreenManager;
 
     public TankBlastClientApplication(){
+        this.networkManager = new NetworkManager("w", 1);
         this.availableGamesScreenManager = new AvailableGamesScreenManager(this);
         this.createLobbyScreenManager = new CreateLobbyScreenManager(this);
         this.lobbyScreenManager = new LobbyScreenManager(this);

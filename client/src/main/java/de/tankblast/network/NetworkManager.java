@@ -17,11 +17,10 @@ public class NetworkManager {
 
     public NetworkManager(String host, int port){
 
-
-        wireWay = new WireWay(SocketTransport.connect(host,port), CommonPacketRegistry.create(), new ChannelSet(), 4096, 512);
-
-        this.configurationPacketStream = wireWay.createPacketChannel(0);
-
+//        wireWay = new WireWay(SocketTransport.connect(host,port), CommonPacketRegistry.create(), new ChannelSet(), 4096, 512);
+//
+//        this.configurationPacketStream = wireWay.createPacketChannel(0);
+//
 
     }
 
@@ -32,7 +31,8 @@ public class NetworkManager {
 
 
     public StatusNetworkController getStatusNetworkController() {
-        return statusNetworkController;
+            return new StatusNetworkController();
+//        return statusNetworkController;
     }
 
 }
