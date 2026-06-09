@@ -74,11 +74,9 @@ public class MenuController extends MouseAdapter {
     private MouseLocation findElementAt(MouseEvent e) {
         Component source = e.getComponent();
 
-        // Panel-Pixel -> Image-Pixel (RenderPanel skaliert das Bild auf seine Größe)
         double imgX = (double) e.getX() * imageWidth  / source.getWidth();
         double imgY = (double) e.getY() * imageHeight / source.getHeight();
 
-        // Inverse von VoxelRenderer#render
         double pixelPerUnit = imageHeight / (2.0 * camera.getPosition().getZ());
         double worldX = camera.getPosition().getX() + (imgX - imageWidth  / 2.0) / pixelPerUnit;
         double worldY = camera.getPosition().getY() - (imgY - imageHeight / 2.0) / pixelPerUnit;

@@ -66,7 +66,6 @@ public class GameLoop implements Runnable {
         if (thread != null) thread.interrupt();
     }
 
-    /** Called from the network thread to enqueue work to run on the next tick. */
     public void enqueueIncoming(Runnable packetHandler) {
         incomingPackets.add(packetHandler);
     }
@@ -82,7 +81,6 @@ public class GameLoop implements Runnable {
             try {
                 tick(timeSinceLastTickNanos, tickStart);
             } catch (Exception e) {
-                // a single bad tick shouldn't kill the loop
                 e.printStackTrace();
             }
 
@@ -100,20 +98,16 @@ public class GameLoop implements Runnable {
     }
 
     private void tick(long timeSinceLastTickNanos, long now) {
-        // 1. incoming packets
         Runnable handler;
         while ((handler = incomingPackets.poll()) != null) {
             handler.run();
         }
 
-        // 2. input -> local player
         InputContext input = new InputContext(inputManager.onTick(now), timeSinceLastTickNanos);
         applyInput(input, now);
 
-        // 3. physics for every entity
         stepPhysics(timeSinceLastTickNanos);
 
-        // 4. outgoing packets (drains into the empty shell for now)
         Runnable out;
         while ((out = outgoingPackets.poll()) != null) {
             out.run();
@@ -121,11 +115,9 @@ public class GameLoop implements Runnable {
     }
 
     private void applyInput(InputContext input, long now) {
-        // rotation
         double rotationDelta = InputMapper.getRotationDegrees(input, Constants.MAX_ROTATION_SPEED);
         localPlayer.setRotation(localPlayer.getRotation() - rotationDelta); // D (right) turns clockwise
 
-        // movement along current facing
         double distance = InputMapper.getMovementDistance(input, Constants.MOVEMENT_SPEED);
         if (distance != 0) {
             double angleRad = Math.toRadians(localPlayer.getRotation());
@@ -135,7 +127,6 @@ public class GameLoop implements Runnable {
             localPlayer.setLocation(localPlayer.getLocation().copy(next));
         }
 
-        // shooting
         if (InputMapper.isShootPressed(input) && now - lastShotAt >= SHOOT_COOLDOWN_NANOS) {
             spawnBullet();
             lastShotAt = now;
@@ -145,7 +136,6 @@ public class GameLoop implements Runnable {
     private void spawnBullet() {
         double angleRad = Math.toRadians(localPlayer.getRotation());
         Vector dir = new Vector(Math.cos(angleRad), Math.sin(angleRad), 0);
-        // spawn just outside the player's radius so it doesn't self-collide
         Vector spawn = localPlayer.getLocation().getPosition()
                 .add(dir.scale(localPlayer.getRadius() + 0.5));
         world.addEntity(new Bullet(null, spawn, dir, BULLET_SPEED, BULLET_MAX_BOUNCES));

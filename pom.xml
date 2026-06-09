@@ -12,6 +12,7 @@
         <module>common</module>
         <module>server</module>
         <module>client</module>
+        <module>wireway</module>
     </modules>
 
     <properties>
@@ -23,11 +24,7 @@
 
 
     <dependencies>
-        <dependency>
-            <groupId>xyz.wireway</groupId>
-            <artifactId>WireWay</artifactId>
-            <version>0.1-ALPHA</version>
-        </dependency>
+
     </dependencies>
 
 </project>

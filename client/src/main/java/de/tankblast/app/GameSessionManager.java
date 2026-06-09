@@ -49,7 +49,7 @@ public class GameSessionManager {
         this.localPlayer = new Player();
         world.addEntity(localPlayer);
 
-        // a few obstacles for bullets to bounce off
+
         world.addEntity(new Obstacle(new Vector(20, 10, 0), 4));
         world.addEntity(new Obstacle(new Vector(-15, -8, 0), 3));
         world.addEntity(new Obstacle(new Vector(5, 25, 0), 5));
@@ -68,11 +68,6 @@ public class GameSessionManager {
         return world != null;
     }
 
-    /**
-     * Moves the camera to follow the local player. Called from the render loop
-     * each frame, independent of the game tick. Only the X/Y are tracked; the
-     * Z (zoom/distance) is left as configured.
-     */
     public void updateCamera() {
         if (localPlayer == null) return;
         Vector pos = localPlayer.getLocation().getPosition();
@@ -80,7 +75,6 @@ public class GameSessionManager {
         camera.setY(pos.getY());
     }
 
-    /** Snapshot of renderable components for the (decoupled) render thread. */
     public List<GraphicsComponent> getGraphicsComponents() {
         List<GraphicsComponent> components = new ArrayList<>();
         if (world == null) return components;

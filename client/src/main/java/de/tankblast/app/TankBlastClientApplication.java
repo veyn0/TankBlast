@@ -44,14 +44,12 @@ public class TankBlastClientApplication {
     private GameSessionManager gameSessionManager;
 
     public TankBlastClientApplication(){
-        this.networkManager = new NetworkManager("w", 1);
+        this.networkManager = new NetworkManager("server.tankblast.de", 26656);
         this.availableGamesScreenManager = new AvailableGamesScreenManager(this);
         this.createLobbyScreenManager = new CreateLobbyScreenManager(this);
         this.lobbyScreenManager = new LobbyScreenManager(this);
         this.window = new TankBlastWindow(width, height);
 
-        // Input layer: the manager collects key timings, the listener feeds it
-        // AWT key events, and focus loss clears any held keys.
         this.inputManager = new InputManager();
         window.addKeyInputListener(new InputListener(inputManager));
         window.addFocusLossHandler(inputManager::onWindowOutOfFocus);
@@ -100,10 +98,6 @@ public class TankBlastClientApplication {
         menuController.setCurrentMenu(menu);
     }
 
-    /**
-     * Starts a (client-side) game session. The session runs its own fixed-step
-     * loop; rendering of its entities is picked up by {@link #collectVoxels()}.
-     */
     public void startGameSession(){
         gameSessionManager.startGameSession();
     }
@@ -118,7 +112,6 @@ public class TankBlastClientApplication {
                 renderer.add(v);
             }
         }
-        // Decoupled from the game tick: read whatever the session currently holds.
         for (GraphicsComponent component : gameSessionManager.getGraphicsComponents()) {
             renderer.add(component);
         }

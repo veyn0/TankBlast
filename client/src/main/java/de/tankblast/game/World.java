@@ -22,7 +22,6 @@ public class World {
         entities.remove(entity);
     }
 
-    /** Immutable snapshot for the render thread. */
     public List<Entity> snapshot() {
         return new ArrayList<>(entities);
     }

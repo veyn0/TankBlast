@@ -75,6 +75,9 @@ public class AvailableGamesScreenManager{
 
 
     private void joinGame(AvailableGame gameInfo){
+
+        // TODO: netzwerkintegration
+
         System.out.println("clicked join on Game " + gameInfo.getLobbyId());
     }
 
