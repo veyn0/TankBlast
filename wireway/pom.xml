@@ -10,7 +10,8 @@
     </parent>
 
     <groupId>xyz.wireway</groupId>
-    <artifactId>wireway</artifactId>
+    <artifactId>WireWay</artifactId>
+    <version>0.1-ALPHA</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>

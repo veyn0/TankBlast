@@ -30,16 +30,14 @@ public class LobbyScreenManager {
         ImageTextureLoader loader = new ImageTextureLoader();
         GenericMenu result = new GenericMenu(new BackGround(new MenuElementLocation(-90, -50, 185, 100), loader.loadResource("textures/background/lobby.png")));
 
-        if(currentLobbyInfo.getOwnerId()==clientApplication.getPlayerId()){
+        if(currentLobbyInfo.getOwnerId().equals(clientApplication.getPlayerId())){
             //start button
             result.addButton(new InteractableButton(
                     new MenuElementLocation(-45,-30,40,10),
                     new ImageTextureLoader().loadResource("textures/buttons/multiplayer/start.png"),
                     new ImageTextureLoader().loadResource("textures/buttons/multiplayer/start_hover.png"),
                     () ->{
-                        clientApplication.startGameSession();
-                        System.out.println("game started");
-
+                        clientApplication.getNetworkManager().getGameNetworkController().requestStartLobby();
                     })
             );
 
@@ -83,6 +81,11 @@ public class LobbyScreenManager {
         return result;
     }
 
+    public void onLobbyUpdate(LobbyInfo lobbyInfo){
+        if(currentLobbyInfo != null && currentLobbyInfo.getLobbyId() == lobbyInfo.getLobbyId()){
+            clientApplication.setCurrentView(createLobbyScreen(lobbyInfo));
+        }
+    }
 
     private InteractableButton createCreateButton(AvailableGame game, MenuElementLocation location){
         Texture background = new ImageTextureLoader().loadResource("textures/buttons/multiplayer/game.png");

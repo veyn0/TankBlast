@@ -5,24 +5,30 @@ import de.tankblast.model.entity.Entity;
 import de.tankblast.model.geometry.Vector;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class PhysicsService {
 
     public static Vector computeNextValidPosition(Entity entity, World world, Vector displacement) {
+        return computeNextValidPosition(entity, world, displacement, hit -> {});
+    }
+
+    public static Vector computeNextValidPosition(Entity entity, World world, Vector displacement, Consumer<Entity> onHit) {
         Vector current = entity.getLocation().getPosition();
         Vector target = current.add(displacement);
 
         if (entity instanceof Bullet bullet) {
-            return resolveBullet(bullet, world, current, target);
+            return resolveBullet(bullet, world, current, target, onHit);
         }
         return resolveBlocking(entity, world, current, target);
     }
 
-    private static Vector resolveBullet(Bullet bullet, World world, Vector current, Vector target) {
+    private static Vector resolveBullet(Bullet bullet, World world, Vector current, Vector target, Consumer<Entity> onHit) {
         Entity hit = firstCollision(bullet, world, target);
         if (hit == null) {
             return target;
         }
+        onHit.accept(hit);
         Vector normal = current.subtract(hit.getLocation().getPosition()).normalized();
         Vector travel = target.subtract(current);
         Vector reflected = travel.reflect(normal);

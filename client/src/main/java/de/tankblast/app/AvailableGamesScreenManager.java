@@ -58,7 +58,7 @@ public class AvailableGamesScreenManager{
                 })
         );
 
-        List<AvailableGame> availableGames = new StatusNetworkController().getAvailableGames(); //TODO: replace with call on this.networkmanager
+        List<AvailableGame> availableGames = clientApplication.getNetworkManager().getStatusNetworkController().getAvailableGames();
 
         int startY = 35;
         int step = 12;
@@ -75,10 +75,13 @@ public class AvailableGamesScreenManager{
 
 
     private void joinGame(AvailableGame gameInfo){
-
-        // TODO: netzwerkintegration
-
-        System.out.println("clicked join on Game " + gameInfo.getLobbyId());
+        StatusNetworkController networkController = clientApplication.getNetworkManager().getStatusNetworkController();
+        networkController.requestJoinLobby(
+                gameInfo.getLobbyId(),
+                lobbyInfo -> {
+                    clientApplication.setCurrentView(clientApplication.getLobbyScreen().createLobbyScreen(lobbyInfo));
+                }
+        );
     }
 
     private InteractableButton createJoinButton(AvailableGame game, MenuElementLocation location){

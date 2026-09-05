@@ -1,9 +1,11 @@
 package de.tankblast.game;
 
 import de.tankblast.model.entity.Entity;
+import de.tankblast.model.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class World {
@@ -12,6 +14,15 @@ public class World {
 
     public List<Entity> getEntities() {
         return entities;
+    }
+
+    public Player findPlayer(UUID playerId) {
+        for (Entity entity : entities) {
+            if (entity instanceof Player player && player.getPlayerId().equals(playerId)) {
+                return player;
+            }
+        }
+        return null;
     }
 
     public void addEntity(Entity entity) {
