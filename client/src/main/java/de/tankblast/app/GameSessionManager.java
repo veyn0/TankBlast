@@ -8,6 +8,9 @@ import de.tankblast.model.entity.Entity;
 import de.tankblast.model.entity.Obstacle;
 import de.tankblast.model.entity.Player;
 import de.tankblast.model.geometry.Vector;
+import de.tankblast.model.map.MapRegistry;
+import de.tankblast.network.GameNetworkController;
+import de.tankblast.protocol.dto.player.PlayerInfo;
 import de.tankblast.render.EntityGraphicsComponent;
 import de.tankblast.render.GraphicsComponent;
 import de.tankblast.render.PlayerCenteredCamera;
@@ -16,6 +19,7 @@ import de.tankblast.texture.Texture;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class GameSessionManager {
 
@@ -39,24 +43,44 @@ public class GameSessionManager {
         this.camera = camera;
     }
 
-    public void startGameSession() {
+    public void startGameSession(int mapId, List<PlayerInfo> players) {
         ImageTextureLoader loader = new ImageTextureLoader();
         this.playerTexture = loader.loadResource("textures/entity/player.png");
         this.bulletTexture = loader.loadResource("textures/entity/bullet.png");
         this.obstacleTexture = loader.loadResource("textures/entity/obstacle.png");
 
         this.world = new World();
-        this.localPlayer = new Player();
-        world.addEntity(localPlayer);
 
+        UUID localPlayerId = clientApplication.getPlayerId();
+        for (int i = 0; i < players.size(); i++) {
+            PlayerInfo info = players.get(i);
+            Player player = new Player(info.getPlayerId(), MapRegistry.getSpawnPoint(mapId, i), 90.0);
+            world.addEntity(player);
+            if (info.getPlayerId().equals(localPlayerId)) {
+                this.localPlayer = player;
+            }
+        }
 
-        world.addEntity(new Obstacle(new Vector(20, 10, 0), 4));
-        world.addEntity(new Obstacle(new Vector(-15, -8, 0), 3));
-        world.addEntity(new Obstacle(new Vector(5, 25, 0), 5));
+        for (Obstacle obstacle : MapRegistry.createObstacles(mapId)) {
+            world.addEntity(obstacle);
+        }
 
         clientApplication.setCurrentView(null);
 
         this.gameLoop = new GameLoop(world, inputManager, localPlayer);
+
+        GameNetworkController networkController = clientApplication.getNetworkManager().getGameNetworkController();
+        gameLoop.setOnLocalPlayerTick(player -> {
+            Vector position = player.getLocation().getPosition();
+            networkController.sendPlayerState(position.getX(), position.getY(), player.getRotation());
+        });
+        gameLoop.setOnLocalBulletSpawn(bullet -> {
+            Vector position = bullet.getLocation().getPosition();
+            Vector direction = bullet.getLocation().getVelocity().getDirection();
+            networkController.sendBulletSpawn(position.getX(), position.getY(), direction.getX(), direction.getY());
+        });
+        gameLoop.setOnLocalBulletHit(networkController::sendPlayerHit);
+
         gameLoop.start();
     }
 
@@ -73,6 +97,19 @@ public class GameSessionManager {
         Vector pos = localPlayer.getLocation().getPosition();
         camera.setX(pos.getX());
         camera.setY(pos.getY());
+    }
+
+    public void onRemotePlayerState(UUID playerId, double x, double y, double rotation) {
+        if (world == null) return;
+        Player player = world.findPlayer(playerId);
+        if (player == null || player == localPlayer) return;
+        player.setLocation(player.getLocation().copy(new Vector(x, y, 0)));
+        player.setRotation(rotation);
+    }
+
+    public void onRemoteBulletSpawn(UUID shooterId, double x, double y, double dirX, double dirY) {
+        if (world == null) return;
+        world.addEntity(new Bullet(shooterId, new Vector(x, y, 0), new Vector(dirX, dirY, 0), GameLoop.BULLET_SPEED, GameLoop.BULLET_MAX_BOUNCES));
     }
 
     public List<GraphicsComponent> getGraphicsComponents() {

@@ -1,4 +1,4 @@
-package de.tankblast.protocol.dto.player;
+package de.tankblast.protocol.dto.game.lobby;
 
 import de.tankblast.protocol.dto.DtoBufferUtil;
 import xyz.wireway.service.BufferSerializable;
@@ -6,34 +6,33 @@ import xyz.wireway.service.PacketBuffer;
 
 import java.util.UUID;
 
-public class PlayerInfo implements BufferSerializable {
+public class JoinLobbyRequest implements BufferSerializable {
 
     private UUID playerId;
-    private String name;
+    private int lobbyId;
 
-    public PlayerInfo(UUID playerId, String name) {
+    public JoinLobbyRequest(UUID playerId, int lobbyId) {
         this.playerId = playerId;
-        this.name = name;
+        this.lobbyId = lobbyId;
     }
-
-    public String getName() {
-        return name;
-    }
-
 
     public UUID getPlayerId() {
         return playerId;
     }
 
+    public int getLobbyId() {
+        return lobbyId;
+    }
+
     @Override
     public void write(PacketBuffer packetBuffer) {
         DtoBufferUtil.writeUUID(packetBuffer, playerId);
-        packetBuffer.writeString(name);
+        packetBuffer.writeInt(lobbyId);
     }
 
-    public static PlayerInfo read(PacketBuffer packetBuffer){
+    public static JoinLobbyRequest read(PacketBuffer packetBuffer){
         UUID playerId = DtoBufferUtil.readUUID(packetBuffer);
-        String name = packetBuffer.readString();
-        return new PlayerInfo(playerId, name);
+        int lobbyId = packetBuffer.readInt();
+        return new JoinLobbyRequest(playerId, lobbyId);
     }
 }

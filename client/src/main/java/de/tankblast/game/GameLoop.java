@@ -13,7 +13,9 @@ import de.tankblast.model.geometry.Vector;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.function.Consumer;
 
 /**
  * Central fixed-step game loop. Runs on its own thread at {@link #TICKS_PER_SECOND}
@@ -32,8 +34,8 @@ public class GameLoop implements Runnable {
     public static final int TICKS_PER_SECOND = 60;
     private static final long NANOS_PER_TICK = 1_000_000_000L / TICKS_PER_SECOND;
 
-    private static final double BULLET_SPEED = 20.0;   // world units per second
-    private static final int BULLET_MAX_BOUNCES = 3;
+    public static final double BULLET_SPEED = 20.0;   // world units per second
+    public static final int BULLET_MAX_BOUNCES = 3;
     private static final long SHOOT_COOLDOWN_NANOS = 250_000_000L; // 0.25s
 
     private final World world;
@@ -47,6 +49,10 @@ public class GameLoop implements Runnable {
     private Thread thread;
 
     private long lastShotAt = 0;
+
+    private Consumer<Player> onLocalPlayerTick;
+    private Consumer<Bullet> onLocalBulletSpawn;
+    private Consumer<UUID> onLocalBulletHit;
 
     public GameLoop(World world, InputManager inputManager, Player localPlayer) {
         this.world = world;
@@ -68,6 +74,18 @@ public class GameLoop implements Runnable {
 
     public void enqueueIncoming(Runnable packetHandler) {
         incomingPackets.add(packetHandler);
+    }
+
+    public void setOnLocalPlayerTick(Consumer<Player> onLocalPlayerTick) {
+        this.onLocalPlayerTick = onLocalPlayerTick;
+    }
+
+    public void setOnLocalBulletSpawn(Consumer<Bullet> onLocalBulletSpawn) {
+        this.onLocalBulletSpawn = onLocalBulletSpawn;
+    }
+
+    public void setOnLocalBulletHit(Consumer<UUID> onLocalBulletHit) {
+        this.onLocalBulletHit = onLocalBulletHit;
     }
 
     @Override
@@ -131,6 +149,8 @@ public class GameLoop implements Runnable {
             spawnBullet();
             lastShotAt = now;
         }
+
+        if (onLocalPlayerTick != null) onLocalPlayerTick.accept(localPlayer);
     }
 
     private void spawnBullet() {
@@ -138,7 +158,9 @@ public class GameLoop implements Runnable {
         Vector dir = new Vector(Math.cos(angleRad), Math.sin(angleRad), 0);
         Vector spawn = localPlayer.getLocation().getPosition()
                 .add(dir.scale(localPlayer.getRadius() + 0.5));
-        world.addEntity(new Bullet(null, spawn, dir, BULLET_SPEED, BULLET_MAX_BOUNCES));
+        Bullet bullet = new Bullet(localPlayer.getPlayerId(), spawn, dir, BULLET_SPEED, BULLET_MAX_BOUNCES);
+        world.addEntity(bullet);
+        if (onLocalBulletSpawn != null) onLocalBulletSpawn.accept(bullet);
     }
 
     private void stepPhysics(long timeSinceLastTickNanos) {
@@ -152,7 +174,7 @@ public class GameLoop implements Runnable {
                     continue;
                 }
                 Vector displacement = bullet.getLocation().getVelocity().asVector().scale(dt);
-                Vector next = PhysicsService.computeNextValidPosition(bullet, world, displacement);
+                Vector next = PhysicsService.computeNextValidPosition(bullet, world, displacement, hit -> onBulletHit(bullet, hit));
                 bullet.setLocation(bullet.getLocation().copy(next));
                 if (bullet.isDead()) {
                     toRemove.add(bullet);
@@ -163,5 +185,13 @@ public class GameLoop implements Runnable {
         for (Entity e : toRemove) {
             world.removeEntity(e);
         }
+    }
+
+    private void onBulletHit(Bullet bullet, Entity hit) {
+        if (onLocalBulletHit == null) return;
+        if (!(hit instanceof Player player)) return;
+        if (!localPlayer.getPlayerId().equals(bullet.getOwnerId())) return;
+        if (player.getPlayerId().equals(localPlayer.getPlayerId())) return;
+        onLocalBulletHit.accept(player.getPlayerId());
     }
 }

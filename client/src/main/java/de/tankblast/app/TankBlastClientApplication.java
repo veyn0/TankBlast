@@ -6,6 +6,7 @@ import de.tankblast.menu.Menu;
 import de.tankblast.menu.MenuController;
 import de.tankblast.menu.menus.homescreen.HomeScreen;
 import de.tankblast.network.NetworkManager;
+import de.tankblast.protocol.dto.player.PlayerInfo;
 import de.tankblast.render.*;
 import de.tankblast.texture.Colour;
 import de.tankblast.view.TankBlastWindow;
@@ -44,7 +45,7 @@ public class TankBlastClientApplication {
     private GameSessionManager gameSessionManager;
 
     public TankBlastClientApplication(){
-        this.networkManager = new NetworkManager("server.tankblast.de", 26656);
+        this.networkManager = new NetworkManager("server.tankblast.de", 26656, playerId, this);
         this.availableGamesScreenManager = new AvailableGamesScreenManager(this);
         this.createLobbyScreenManager = new CreateLobbyScreenManager(this);
         this.lobbyScreenManager = new LobbyScreenManager(this);
@@ -98,12 +99,18 @@ public class TankBlastClientApplication {
         menuController.setCurrentMenu(menu);
     }
 
-    public void startGameSession(){
-        gameSessionManager.startGameSession();
+    public void startGameSession(int mapId, List<PlayerInfo> players){
+        gameSessionManager.startGameSession(mapId, players);
     }
 
     public void stopGameSession(){
         gameSessionManager.stopGameSession();
+    }
+
+    public void onGameOver(UUID winnerId, String winnerName){
+        stopGameSession();
+        System.out.println(winnerName + " has won the game!");
+        setCurrentView(new HomeScreen(this));
     }
 
     private void collectVoxels(){

@@ -13,6 +13,9 @@ public class ClientBoundAvailableGamesResponse implements Packet {
 
     private List<AvailableGame> availableGames;
 
+    public ClientBoundAvailableGamesResponse() {
+    }
+
     public ClientBoundAvailableGamesResponse(List<AvailableGame> availableGames) {
         this.availableGames = availableGames;
     }
@@ -24,8 +27,7 @@ public class ClientBoundAvailableGamesResponse implements Packet {
     @Override
     public void decode(ByteBuffer byteBuffer) {
         PacketBuffer packetBuffer = new PacketBuffer(byteBuffer);
-        packetBuffer.readList(AvailableGame::read);
-
+        availableGames = packetBuffer.readList(AvailableGame::read);
     }
 
     @Override
