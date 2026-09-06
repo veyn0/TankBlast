@@ -13,7 +13,7 @@ import de.tankblast.protocol.packet.play.ServerBoundStartLobbyRequestPacket;
 import de.tankblast.protocol.packet.status.ClientBoundLobbyUpdatePacket;
 import xyz.wireway.protocol.Packet;
 import xyz.wireway.service.WireWay;
-import xyz.wireway.service.asyncpacketstream.AsyncPacketListener;
+import xyz.wireway.service.AsyncPacketListener;
 
 import java.util.UUID;
 
@@ -29,7 +29,7 @@ public class GameNetworkController implements AsyncPacketListener {
         this.wireWay = wireWay;
         this.playerId = playerId;
         this.clientApplication = clientApplication;
-        wireWay.addAsyncPacketChannelListener(this);
+        wireWay.addPacketListener(this);
     }
 
     @Override
@@ -48,19 +48,19 @@ public class GameNetworkController implements AsyncPacketListener {
     }
 
     public void requestStartLobby(){
-        wireWay.sendPacketAsync(new ServerBoundStartLobbyRequestPacket(new startLobbyRequest(playerId)));
+        wireWay.sendPacket(new ServerBoundStartLobbyRequestPacket(new startLobbyRequest(playerId)));
     }
 
     public void sendPlayerState(double x, double y, double rotation){
-        wireWay.sendPacketAsync(new ServerBoundPlayerStatePacket(x, y, rotation));
+        wireWay.sendPacket(new ServerBoundPlayerStatePacket(x, y, rotation));
     }
 
     public void sendBulletSpawn(double x, double y, double dirX, double dirY){
-        wireWay.sendPacketAsync(new ServerBoundBulletSpawnPacket(x, y, dirX, dirY));
+        wireWay.sendPacket(new ServerBoundBulletSpawnPacket(x, y, dirX, dirY));
     }
 
     public void sendPlayerHit(UUID targetPlayerId){
-        wireWay.sendPacketAsync(new ServerBoundPlayerHitPacket(targetPlayerId));
+        wireWay.sendPacket(new ServerBoundPlayerHitPacket(targetPlayerId));
     }
 
 }

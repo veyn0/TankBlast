@@ -22,7 +22,7 @@ public class NetworkManager {
     public NetworkManager(String host, int port, UUID playerId, TankBlastClientApplication clientApplication){
         wireWay = new WireWay(SocketTransport.connect(host, port), CommonPacketRegistry.create(), new ChannelSet(), 4096, 512);
 
-        this.configurationPacketStream = wireWay.createPacketChannel(0);
+        this.configurationPacketStream = wireWay.openStream(0);
 
         this.statusNetworkController = new StatusNetworkController(configurationPacketStream, playerId);
         this.gameNetworkController = new GameNetworkController(wireWay, playerId, clientApplication);
