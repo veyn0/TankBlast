@@ -3,7 +3,7 @@ package de.tankblast;
 import de.tankblast.lobby.LobbyManager;
 import de.tankblast.network.ClientSession;
 import de.tankblast.protocol.registry.CommonPacketRegistry;
-import xyz.wireway.frame.channel.ChannelSet;
+import xyz.wireway.channel.ChannelSet;
 import xyz.wireway.service.WireWay;
 import xyz.wireway.transport.adapter.SocketTransport;
 

@@ -20,7 +20,7 @@ import de.tankblast.protocol.packet.status.ServerBoundCreateLobbyRequestPacket;
 import de.tankblast.protocol.packet.status.ServerBoundJoinLobbyRequestPacket;
 import xyz.wireway.protocol.Packet;
 import xyz.wireway.service.WireWay;
-import xyz.wireway.service.packetstream.PacketStream;
+import xyz.wireway.service.PacketStream;
 
 import java.util.UUID;
 
@@ -36,12 +36,12 @@ public class ClientSession {
     public ClientSession(WireWay wireWay, LobbyManager lobbyManager) {
         this.wireWay = wireWay;
         this.lobbyManager = lobbyManager;
-        this.statusStream = wireWay.createPacketChannel(0);
+        this.statusStream = wireWay.openStream(0);
     }
 
     public void register(){
         statusStream.setListener(this::handleStatusPacket);
-        wireWay.addAsyncPacketChannelListener(this::handleAsyncPacket);
+        wireWay.addPacketListener(this::handleAsyncPacket);
     }
 
     private Packet handleStatusPacket(Packet packet){
@@ -100,7 +100,7 @@ public class ClientSession {
     }
 
     public void sendAsync(Packet packet){
-        wireWay.sendPacketAsync(packet);
+        wireWay.sendPacket(packet);
     }
 
 }

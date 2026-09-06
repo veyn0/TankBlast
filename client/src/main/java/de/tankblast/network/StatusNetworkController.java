@@ -9,7 +9,7 @@ import de.tankblast.protocol.packet.status.ClientBoundLobbyInfoResponsePacket;
 import de.tankblast.protocol.packet.status.ServerBoundAvailableGameRequest;
 import de.tankblast.protocol.packet.status.ServerBoundCreateLobbyRequestPacket;
 import de.tankblast.protocol.packet.status.ServerBoundJoinLobbyRequestPacket;
-import xyz.wireway.service.packetstream.PacketStream;
+import xyz.wireway.service.PacketStream;
 
 import java.util.List;
 import java.util.UUID;
@@ -30,7 +30,7 @@ public class StatusNetworkController {
 
     public List<AvailableGame> getAvailableGames(){
         CompletableFuture<List<AvailableGame>> future = new CompletableFuture<>();
-        statusPacketStream.sendPacket(new ServerBoundAvailableGameRequest(), response -> {
+        statusPacketStream.send(new ServerBoundAvailableGameRequest(), response -> {
             future.complete(((ClientBoundAvailableGamesResponse) response).getAvailableGames());
         });
         try {
@@ -41,13 +41,13 @@ public class StatusNetworkController {
     }
 
     public void createLobby(CreateLobbyRequest request, Consumer<LobbyInfo> lobbyInfoConsumer){
-        statusPacketStream.sendPacket(new ServerBoundCreateLobbyRequestPacket(request), response -> {
+        statusPacketStream.send(new ServerBoundCreateLobbyRequestPacket(request), response -> {
             lobbyInfoConsumer.accept(((ClientBoundLobbyInfoResponsePacket) response).getLobbyInfo());
         });
     }
 
     public void requestJoinLobby(int lobbyId, Consumer<LobbyInfo> lobbyInfoConsumer){
-        statusPacketStream.sendPacket(new ServerBoundJoinLobbyRequestPacket(new JoinLobbyRequest(playerId, lobbyId)), response -> {
+        statusPacketStream.send(new ServerBoundJoinLobbyRequestPacket(new JoinLobbyRequest(playerId, lobbyId)), response -> {
             lobbyInfoConsumer.accept(((ClientBoundLobbyInfoResponsePacket) response).getLobbyInfo());
         });
     }
