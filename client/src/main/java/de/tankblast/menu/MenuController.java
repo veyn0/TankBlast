@@ -1,5 +1,7 @@
 package de.tankblast.menu;
 
+import de.tankblast.audio.SoundEffect;
+import de.tankblast.audio.SoundManager;
 import de.tankblast.menu.element.*;
 import de.tankblast.menu.event.ElementClickEvent;
 import de.tankblast.menu.event.ElementStartHoverEvent;
@@ -15,14 +17,16 @@ public class MenuController extends MouseAdapter {
     private final Camera camera;
     private final int imageWidth;
     private final int imageHeight;
+    private final SoundManager soundManager;
 
     private Menu currentMenu;
     private MenuElement lastHovered;
 
-    public MenuController(Camera camera, int imageWidth, int imageHeight) {
+    public MenuController(Camera camera, int imageWidth, int imageHeight, SoundManager soundManager) {
         this.camera = camera;
         this.imageWidth = imageWidth;
         this.imageHeight = imageHeight;
+        this.soundManager = soundManager;
     }
 
     public void setCurrentMenu(Menu menu) {
@@ -38,6 +42,7 @@ public class MenuController extends MouseAdapter {
         if (currentMenu == null) return;
         MouseLocation element = findElementAt(e);
         if (element.getElement() == null) return;
+        if (soundManager != null) soundManager.play(SoundEffect.MENU_CLICK);
         dispatch(new ElementClickEvent(element, currentMenu));
     }
 

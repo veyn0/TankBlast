@@ -8,6 +8,7 @@ import de.tankblast.protocol.packet.play.ClientBoundInitGamePacket;
 import de.tankblast.protocol.packet.play.ClientBoundPlayerEliminatedPacket;
 import de.tankblast.protocol.packet.play.ClientBoundPlayerLivesPacket;
 import de.tankblast.protocol.packet.play.ClientBoundPlayerStatePacket;
+import de.tankblast.protocol.packet.play.ServerBoundAtomBombPacket;
 import de.tankblast.protocol.packet.play.ServerBoundBulletSpawnPacket;
 import de.tankblast.protocol.packet.play.ServerBoundPlayerHitPacket;
 import de.tankblast.protocol.packet.play.ServerBoundPlayerStatePacket;
@@ -67,6 +68,10 @@ public class GameNetworkController implements AsyncPacketListener {
 
     public void sendPlayerHit(UUID targetPlayerId){
         wireWay.sendPacket(new ServerBoundPlayerHitPacket(targetPlayerId));
+    }
+
+    public void sendAtomBomb(){
+        wireWay.sendPacket(new ServerBoundAtomBombPacket());
     }
 
 }

@@ -10,6 +10,7 @@ import de.tankblast.protocol.packet.play.ClientBoundInitGamePacket;
 import de.tankblast.protocol.packet.play.ClientBoundPlayerEliminatedPacket;
 import de.tankblast.protocol.packet.play.ClientBoundPlayerLivesPacket;
 import de.tankblast.protocol.packet.play.ClientBoundPlayerStatePacket;
+import de.tankblast.protocol.packet.play.ServerBoundAtomBombPacket;
 import de.tankblast.protocol.packet.play.ServerBoundBulletSpawnPacket;
 import de.tankblast.protocol.packet.play.ServerBoundPlayerHitPacket;
 import de.tankblast.protocol.packet.play.ServerBoundPlayerStatePacket;
@@ -96,7 +97,21 @@ public class ClientSession {
                 currentLobby.broadcast(new ClientBoundPlayerEliminatedPacket(targetId));
             }
             checkForWinner();
+            return;
         }
+        if (packet instanceof ServerBoundAtomBombPacket) {
+            triggerAtomBomb();
+        }
+    }
+
+    private void triggerAtomBomb(){
+        if (currentLobby.isFinished()) return;
+        currentLobby.setFinished(true);
+        for (UUID id : currentLobby.eliminateAll()) {
+            currentLobby.broadcast(new ClientBoundPlayerEliminatedPacket(id));
+        }
+        currentLobby.broadcast(new ClientBoundGameOverPacket(null, null));
+        lobbyManager.removeLobby(currentLobby.getId());
     }
 
     public void onDisconnect(){

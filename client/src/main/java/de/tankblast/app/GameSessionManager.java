@@ -1,6 +1,9 @@
 package de.tankblast.app;
 
 import de.tankblast.Constants;
+import de.tankblast.audio.LoopSound;
+import de.tankblast.audio.SoundEffect;
+import de.tankblast.audio.SoundManager;
 import de.tankblast.game.GameLoop;
 import de.tankblast.game.World;
 import de.tankblast.input.InputManager;
@@ -34,6 +37,7 @@ public class GameSessionManager {
     private final PlayerCenteredCamera camera;
     private final int screenWidth;
     private final int screenHeight;
+    private final SoundManager soundManager;
 
     private World world;
     private Player localPlayer;
@@ -48,12 +52,14 @@ public class GameSessionManager {
                               InputManager inputManager,
                               PlayerCenteredCamera camera,
                               int screenWidth,
-                              int screenHeight) {
+                              int screenHeight,
+                              SoundManager soundManager) {
         this.clientApplication = clientApplication;
         this.inputManager = inputManager;
         this.camera = camera;
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
+        this.soundManager = soundManager;
     }
 
     public void startGameSession(int mapId, List<PlayerInfo> players) {
@@ -97,6 +103,20 @@ public class GameSessionManager {
             networkController.sendBulletSpawn(position.getX(), position.getY(), direction.getX(), direction.getY());
         });
         gameLoop.setOnLocalBulletHit(networkController::sendPlayerHit);
+        gameLoop.setOnLocalAtomBomb(networkController::sendAtomBomb);
+        gameLoop.setOnMovementState((moving, turning) -> {
+            soundManager.setLoopActive(LoopSound.DRIVE, moving);
+            soundManager.setLoopActive(LoopSound.TURN, turning);
+        });
+        gameLoop.setOnBulletCollision((bullet, hit) -> {
+            if (hit instanceof Player) {
+                soundManager.play(SoundEffect.HIT);
+            } else if (hit instanceof Bullet) {
+                soundManager.play(SoundEffect.BULLET_COLLISION);
+            } else {
+                soundManager.play(SoundEffect.BULLET_BOUNCE);
+            }
+        });
 
         gameLoop.start();
     }
@@ -110,6 +130,8 @@ public class GameSessionManager {
         livesByPlayer.clear();
         camera.setX(0);
         camera.setY(0);
+        soundManager.setLoopActive(LoopSound.DRIVE, false);
+        soundManager.setLoopActive(LoopSound.TURN, false);
     }
 
     public boolean isRunning() {
@@ -141,6 +163,7 @@ public class GameSessionManager {
         Player player = world.findPlayer(playerId);
         if (player != null) world.removeEntity(player);
         livesByPlayer.put(playerId, 0);
+        soundManager.play(SoundEffect.DEATH);
         if (localPlayer != null && localPlayer.getPlayerId().equals(playerId) && gameLoop != null) {
             gameLoop.eliminate();
         }

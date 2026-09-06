@@ -1,5 +1,6 @@
 package de.tankblast.app;
 
+import de.tankblast.audio.SoundManager;
 import de.tankblast.input.InputListener;
 import de.tankblast.input.InputManager;
 import de.tankblast.menu.Menu;
@@ -44,6 +45,8 @@ public class TankBlastClientApplication {
 
     private GameSessionManager gameSessionManager;
 
+    private SoundManager soundManager;
+
     public TankBlastClientApplication(){
         this.networkManager = new NetworkManager("localhost", 26656, playerId, this);
         this.availableGamesScreenManager = new AvailableGamesScreenManager(this);
@@ -55,13 +58,15 @@ public class TankBlastClientApplication {
         window.addKeyInputListener(new InputListener(inputManager));
         window.addFocusLossHandler(inputManager::onWindowOutOfFocus);
 
+        this.soundManager = new SoundManager();
+
         PlayerCenteredCamera camera = new PlayerCenteredCamera();
-        this.gameSessionManager = new GameSessionManager(this, inputManager, camera, width, height);
+        this.gameSessionManager = new GameSessionManager(this, inputManager, camera, width, height, soundManager);
 
         this.renderer = new VoxelRenderer();
         renderer.setCamera(camera);
 
-        menuController = new MenuController(camera, width, height);
+        menuController = new MenuController(camera, width, height, soundManager);
         setCurrentView(new HomeScreen(this));
         window.addMouseInputListener(menuController);
 
@@ -109,7 +114,11 @@ public class TankBlastClientApplication {
 
     public void onGameOver(UUID winnerId, String winnerName){
         stopGameSession();
-        System.out.println(winnerName + " has won the game!");
+        if (winnerId == null) {
+            System.out.println("Atombombe! Alle Spieler haben verloren.");
+        } else {
+            System.out.println(winnerName + " has won the game!");
+        }
         setCurrentView(new HomeScreen(this));
     }
 
@@ -152,5 +161,9 @@ public class TankBlastClientApplication {
 
     public GameSessionManager getGameSessionManager() {
         return gameSessionManager;
+    }
+
+    public SoundManager getSoundManager() {
+        return soundManager;
     }
 }

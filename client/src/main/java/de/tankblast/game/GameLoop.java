@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
@@ -50,10 +51,14 @@ public class GameLoop implements Runnable {
     private Thread thread;
 
     private long lastShotAt = 0;
+    private boolean atomBombTriggered;
 
     private Consumer<Player> onLocalPlayerTick;
     private Consumer<Bullet> onLocalBulletSpawn;
     private Consumer<UUID> onLocalBulletHit;
+    private Runnable onLocalAtomBomb;
+    private BiConsumer<Boolean, Boolean> onMovementState;
+    private BiConsumer<Bullet, Entity> onBulletCollision;
 
     public GameLoop(World world, InputManager inputManager, Player localPlayer) {
         this.world = world;
@@ -91,6 +96,18 @@ public class GameLoop implements Runnable {
 
     public void setOnLocalBulletHit(Consumer<UUID> onLocalBulletHit) {
         this.onLocalBulletHit = onLocalBulletHit;
+    }
+
+    public void setOnLocalAtomBomb(Runnable onLocalAtomBomb) {
+        this.onLocalAtomBomb = onLocalAtomBomb;
+    }
+
+    public void setOnMovementState(BiConsumer<Boolean, Boolean> onMovementState) {
+        this.onMovementState = onMovementState;
+    }
+
+    public void setOnBulletCollision(BiConsumer<Bullet, Entity> onBulletCollision) {
+        this.onBulletCollision = onBulletCollision;
     }
 
     @Override
@@ -138,7 +155,19 @@ public class GameLoop implements Runnable {
     }
 
     private void applyInput(InputContext input, long now) {
-        if (eliminated) return;
+        if (InputMapper.isAtomBombPressed(input) && !atomBombTriggered) {
+            atomBombTriggered = true;
+            if (onLocalAtomBomb != null) onLocalAtomBomb.run();
+        }
+
+        if (eliminated) {
+            if (onMovementState != null) onMovementState.accept(false, false);
+            return;
+        }
+
+        double rotationPercentage = InputMapper.getRotationPercentage(input);
+        double movementPercentage = InputMapper.getMovementPercentage(input);
+        if (onMovementState != null) onMovementState.accept(movementPercentage != 0, rotationPercentage != 0);
 
         double rotationDelta = InputMapper.getRotationDegrees(input, Constants.MAX_ROTATION_SPEED);
         localPlayer.setRotation(localPlayer.getRotation() - rotationDelta); // D (right) turns clockwise
@@ -181,7 +210,10 @@ public class GameLoop implements Runnable {
                     continue;
                 }
                 Vector displacement = bullet.getLocation().getVelocity().asVector().scale(dt);
-                Vector next = PhysicsService.computeNextValidPosition(bullet, world, displacement, hit -> onBulletHit(bullet, hit));
+                Vector next = PhysicsService.computeNextValidPosition(bullet, world, displacement, hit -> {
+                    if (onBulletCollision != null) onBulletCollision.accept(bullet, hit);
+                    onBulletHit(bullet, hit);
+                });
                 bullet.setLocation(bullet.getLocation().copy(next));
                 if (bullet.isDead()) {
                     toRemove.add(bullet);
