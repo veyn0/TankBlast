@@ -86,6 +86,9 @@ public class GameSessionManager {
 
     public void stopGameSession() {
         if (gameLoop != null) gameLoop.stop();
+        gameLoop = null;
+        world = null;
+        localPlayer = null;
     }
 
     public boolean isRunning() {
@@ -110,6 +113,15 @@ public class GameSessionManager {
     public void onRemoteBulletSpawn(UUID shooterId, double x, double y, double dirX, double dirY) {
         if (world == null) return;
         world.addEntity(new Bullet(shooterId, new Vector(x, y, 0), new Vector(dirX, dirY, 0), GameLoop.BULLET_SPEED, GameLoop.BULLET_MAX_BOUNCES));
+    }
+
+    public void onPlayerEliminated(UUID playerId) {
+        if (world == null) return;
+        Player player = world.findPlayer(playerId);
+        if (player != null) world.removeEntity(player);
+        if (localPlayer != null && localPlayer.getPlayerId().equals(playerId) && gameLoop != null) {
+            gameLoop.eliminate();
+        }
     }
 
     public List<GraphicsComponent> getGraphicsComponents() {

@@ -5,6 +5,7 @@ import de.tankblast.protocol.dto.game.lobby.startLobbyRequest;
 import de.tankblast.protocol.packet.play.ClientBoundBulletSpawnPacket;
 import de.tankblast.protocol.packet.play.ClientBoundGameOverPacket;
 import de.tankblast.protocol.packet.play.ClientBoundInitGamePacket;
+import de.tankblast.protocol.packet.play.ClientBoundPlayerEliminatedPacket;
 import de.tankblast.protocol.packet.play.ClientBoundPlayerStatePacket;
 import de.tankblast.protocol.packet.play.ServerBoundBulletSpawnPacket;
 import de.tankblast.protocol.packet.play.ServerBoundPlayerHitPacket;
@@ -40,6 +41,8 @@ public class GameNetworkController implements AsyncPacketListener {
             clientApplication.getGameSessionManager().onRemotePlayerState(packet.getPlayerId(), packet.getX(), packet.getY(), packet.getRotation());
         } else if (p instanceof ClientBoundBulletSpawnPacket packet) {
             clientApplication.getGameSessionManager().onRemoteBulletSpawn(packet.getShooterId(), packet.getX(), packet.getY(), packet.getDirX(), packet.getDirY());
+        } else if (p instanceof ClientBoundPlayerEliminatedPacket packet) {
+            clientApplication.getGameSessionManager().onPlayerEliminated(packet.getPlayerId());
         } else if (p instanceof ClientBoundGameOverPacket packet) {
             clientApplication.onGameOver(packet.getWinnerId(), packet.getWinnerName());
         } else if (p instanceof ClientBoundLobbyUpdatePacket packet) {
