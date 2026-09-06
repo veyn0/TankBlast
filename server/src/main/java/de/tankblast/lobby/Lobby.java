@@ -1,5 +1,6 @@
 package de.tankblast.lobby;
 
+import de.tankblast.Constants;
 import de.tankblast.network.ClientSession;
 import de.tankblast.protocol.dto.game.available.AvailableGame;
 import de.tankblast.protocol.dto.game.lobby.LobbyInfo;
@@ -13,8 +14,6 @@ import java.util.Map;
 import java.util.UUID;
 
 public class Lobby {
-
-    private static final int STARTING_LIVES = 5;
 
     private final int id;
     private final String name;
@@ -38,7 +37,11 @@ public class Lobby {
 
     public synchronized void addPlayer(ClientSession session){
         players.put(session.getPlayerId(), session);
-        lives.put(session.getPlayerId(), STARTING_LIVES);
+        lives.put(session.getPlayerId(), Constants.STARTING_LIVES);
+    }
+
+    public synchronized int getLives(UUID playerId){
+        return lives.getOrDefault(playerId, 0);
     }
 
     public synchronized void removePlayer(UUID playerId){
