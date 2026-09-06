@@ -33,15 +33,15 @@ public class ClientBoundGameOverPacket implements Packet {
     @Override
     public void decode(ByteBuffer byteBuffer) {
         PacketBuffer packetBuffer = new PacketBuffer(byteBuffer);
-        winnerId = DtoBufferUtil.readUUID(packetBuffer);
+        winnerId = packetBuffer.readOptional(DtoBufferUtil::readUUID);
         winnerName = packetBuffer.readString();
     }
 
     @Override
     public ByteBuffer encode() {
         PacketBuffer packetBuffer = new PacketBuffer();
-        DtoBufferUtil.writeUUID(packetBuffer, winnerId);
-        packetBuffer.writeString(winnerName);
+        packetBuffer.writeOptional(winnerId, DtoBufferUtil::writeUUID);
+        packetBuffer.writeString(winnerName == null ? "" : winnerName);
         return packetBuffer.toByteBuffer();
     }
 }

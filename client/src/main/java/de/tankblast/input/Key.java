@@ -7,7 +7,8 @@ public enum Key {
     A(KeyEvent.VK_A),
     S(KeyEvent.VK_S),
     D(KeyEvent.VK_D),
-    SPACE(KeyEvent.VK_SPACE);
+    SPACE(KeyEvent.VK_SPACE),
+    O(KeyEvent.VK_O);
 
     private final int keyCode;
 

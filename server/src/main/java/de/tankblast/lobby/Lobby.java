@@ -102,6 +102,14 @@ public class Lobby {
         return true;
     }
 
+    public synchronized List<UUID> eliminateAll(){
+        List<UUID> eliminated = new ArrayList<>();
+        for (UUID playerId : lives.keySet()) {
+            if (eliminate(playerId)) eliminated.add(playerId);
+        }
+        return eliminated;
+    }
+
     public synchronized UUID getWinnerIfDecided(){
         List<UUID> alive = new ArrayList<>();
         for (Map.Entry<UUID, Integer> entry : lives.entrySet()) {

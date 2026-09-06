@@ -39,6 +39,11 @@ public class InputMapper {
         return pressed != null && pressed > 0;
     }
 
+    public static boolean isAtomBombPressed(InputContext inputContext){
+        Long pressed = inputContext.getKeyStrokes().get(Key.O.getKeyCode());
+        return pressed != null && pressed > 0;
+    }
+
     private static float getKeyPressedPercentage(InputContext inputContext, Key key){
         Long pressedNanos = inputContext.getKeyStrokes().get(key.getKeyCode());
         if (pressedNanos == null) return 0f;
