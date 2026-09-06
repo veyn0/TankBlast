@@ -15,10 +15,14 @@ import de.tankblast.render.EntityGraphicsComponent;
 import de.tankblast.render.GraphicsComponent;
 import de.tankblast.render.PlayerCenteredCamera;
 import de.tankblast.texture.ImageTextureLoader;
+import de.tankblast.texture.PlayerColorPalette;
 import de.tankblast.texture.Texture;
+import de.tankblast.texture.TextureUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class GameSessionManager {
@@ -31,7 +35,7 @@ public class GameSessionManager {
     private Player localPlayer;
     private GameLoop gameLoop;
 
-    private Texture playerTexture;
+    private final Map<UUID, Texture> playerTextures = new HashMap<>();
     private Texture bulletTexture;
     private Texture obstacleTexture;
 
@@ -45,17 +49,19 @@ public class GameSessionManager {
 
     public void startGameSession(int mapId, List<PlayerInfo> players) {
         ImageTextureLoader loader = new ImageTextureLoader();
-        this.playerTexture = loader.loadResource("textures/entity/player.png");
+        Texture basePlayerTexture = loader.loadResource("textures/entity/player.png");
         this.bulletTexture = loader.loadResource("textures/entity/bullet.png");
         this.obstacleTexture = loader.loadResource("textures/entity/obstacle.png");
 
         this.world = new World();
+        this.playerTextures.clear();
 
         UUID localPlayerId = clientApplication.getPlayerId();
         for (int i = 0; i < players.size(); i++) {
             PlayerInfo info = players.get(i);
             Player player = new Player(info.getPlayerId(), MapRegistry.getSpawnPoint(mapId, i), 90.0);
             world.addEntity(player);
+            playerTextures.put(info.getPlayerId(), TextureUtils.tint(basePlayerTexture, PlayerColorPalette.colourFor(i)));
             if (info.getPlayerId().equals(localPlayerId)) {
                 this.localPlayer = player;
             }
@@ -89,6 +95,9 @@ public class GameSessionManager {
         gameLoop = null;
         world = null;
         localPlayer = null;
+        playerTextures.clear();
+        camera.setX(0);
+        camera.setY(0);
     }
 
     public boolean isRunning() {
@@ -137,7 +146,7 @@ public class GameSessionManager {
     }
 
     private Texture textureFor(Entity entity) {
-        if (entity instanceof Player) return playerTexture;
+        if (entity instanceof Player player) return playerTextures.get(player.getPlayerId());
         if (entity instanceof Bullet) return bulletTexture;
         if (entity instanceof Obstacle) return obstacleTexture;
         return null;

@@ -10,8 +10,9 @@ import java.util.List;
 public class PlayerUtils {
 
 
-    public static Texture createPlayerInfoTexture(Texture background, PlayerInfo playerInfo){
-        return TextTextureCreator.createTextureWithText(background, "SansSerif", List.of(
+    public static Texture createPlayerInfoTexture(Texture background, PlayerInfo playerInfo, int colour){
+        Texture tinted = TextureUtils.tint(background, colour);
+        return TextTextureCreator.createTextureWithText(tinted, "SansSerif", List.of(
                 new TextInfo(playerInfo.getName(), 20,88, 80, Color.WHITE)
         ));
     };
