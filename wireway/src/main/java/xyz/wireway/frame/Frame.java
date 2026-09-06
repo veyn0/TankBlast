@@ -25,7 +25,7 @@ public class Frame {
     }
 
     public static Frame read(ComposedBuffer composedBuffer){
-        int len = VarInt.readVarInt(composedBuffer.peek(5));
+        int len = VarInt.readVarInt(composedBuffer.peek(Math.min(composedBuffer.remaining(), 5)));
         return read(composedBuffer.get(len + VarInt.sizeOf(len)));
     }
 

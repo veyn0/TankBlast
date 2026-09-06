@@ -24,7 +24,7 @@ public interface Packet {
     }
 
     static Packet read(ComposedBuffer buffer, PacketRegistry packetRegistry){
-        int len = VarInt.readVarInt(buffer.peek(5));
+        int len = VarInt.readVarInt(buffer.peek(Math.min(buffer.remaining(), 5)));
         return read(buffer.get(len + VarInt.sizeOf(len)), packetRegistry);
     }
 
