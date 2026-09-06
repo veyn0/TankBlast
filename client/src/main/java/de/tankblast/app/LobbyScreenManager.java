@@ -9,6 +9,7 @@ import de.tankblast.protocol.dto.game.available.AvailableGame;
 import de.tankblast.protocol.dto.game.lobby.LobbyInfo;
 import de.tankblast.protocol.dto.player.PlayerInfo;
 import de.tankblast.texture.ImageTextureLoader;
+import de.tankblast.texture.PlayerColorPalette;
 import de.tankblast.texture.PlayerUtils;
 import de.tankblast.texture.Texture;
 
@@ -65,7 +66,7 @@ public class LobbyScreenManager {
 
         for(int i = 0; i < playerInfos.size(); i++){
             int y = baseY + (i * offsetY);
-            Texture t = PlayerUtils.createPlayerInfoTexture(loader.loadResource("textures/buttons/multiplayer/game.png"), playerInfos.get(i));
+            Texture t = PlayerUtils.createPlayerInfoTexture(loader.loadResource("textures/buttons/multiplayer/game.png"), playerInfos.get(i), PlayerColorPalette.colourFor(i));
             result.addButton(
                     new InteractableButton(
                             new MenuElementLocation(5,y,20,5),
