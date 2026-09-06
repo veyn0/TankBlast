@@ -3,19 +3,19 @@ package de.tankblast.input;
 public class InputMapper {
 
     public static float getForwardKeyPercentage(InputContext inputContext){
-        return getKeyPressedPercentage(inputContext, Key.W);
+        return getKeyPressedPercentage(inputContext, Key.W, Key.UP);
     }
 
     public static float getBackwardKeyPercentage(InputContext inputContext){
-        return getKeyPressedPercentage(inputContext, Key.S);
+        return getKeyPressedPercentage(inputContext, Key.S, Key.DOWN);
     }
 
     public static float getRotateRightKeyPercentage(InputContext inputContext){
-        return getKeyPressedPercentage(inputContext, Key.D);
+        return getKeyPressedPercentage(inputContext, Key.D, Key.RIGHT);
     }
 
     public static float getRotateLeftKeyPercentage(InputContext inputContext){
-        return getKeyPressedPercentage(inputContext, Key.A);
+        return getKeyPressedPercentage(inputContext, Key.A, Key.LEFT);
     }
 
     public static float getMovementPercentage(InputContext inputContext){
@@ -35,21 +35,27 @@ public class InputMapper {
     }
 
     public static boolean isShootPressed(InputContext inputContext){
-        Long pressed = inputContext.getKeyStrokes().get(Key.SPACE.getKeyCode());
-        return pressed != null && pressed > 0;
+        return isKeyPressed(inputContext, Key.SPACE) || isKeyPressed(inputContext, Key.MOUSE_LEFT);
     }
 
     public static boolean isAtomBombPressed(InputContext inputContext){
-        Long pressed = inputContext.getKeyStrokes().get(Key.O.getKeyCode());
+        return isKeyPressed(inputContext, Key.O);
+    }
+
+    private static boolean isKeyPressed(InputContext inputContext, Key key){
+        Long pressed = inputContext.getKeyStrokes().get(key.getKeyCode());
         return pressed != null && pressed > 0;
     }
 
-    private static float getKeyPressedPercentage(InputContext inputContext, Key key){
-        Long pressedNanos = inputContext.getKeyStrokes().get(key.getKeyCode());
-        if (pressedNanos == null) return 0f;
+    private static float getKeyPressedPercentage(InputContext inputContext, Key... keys){
         long tickNanos = inputContext.getTimeSinceLastTickNanos();
         if (tickNanos <= 0) return 0f;
-        return (float) Math.clamp((double) pressedNanos / (double) tickNanos, 0, 1);
+        long totalPressedNanos = 0;
+        for (Key key : keys) {
+            Long pressedNanos = inputContext.getKeyStrokes().get(key.getKeyCode());
+            if (pressedNanos != null) totalPressedNanos += pressedNanos;
+        }
+        return (float) Math.clamp((double) totalPressedNanos / (double) tickNanos, 0, 1);
     }
 
 }

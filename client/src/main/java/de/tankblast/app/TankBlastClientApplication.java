@@ -1,6 +1,7 @@
 package de.tankblast.app;
 
 import de.tankblast.audio.SoundManager;
+import de.tankblast.input.GameMouseInputListener;
 import de.tankblast.input.InputListener;
 import de.tankblast.input.InputManager;
 import de.tankblast.menu.Menu;
@@ -56,6 +57,7 @@ public class TankBlastClientApplication {
 
         this.inputManager = new InputManager();
         window.addKeyInputListener(new InputListener(inputManager));
+        window.addMouseInputListener(new GameMouseInputListener(inputManager));
         window.addFocusLossHandler(inputManager::onWindowOutOfFocus);
 
         this.soundManager = new SoundManager();
