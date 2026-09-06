@@ -45,7 +45,7 @@ public class TankBlastClientApplication {
     private GameSessionManager gameSessionManager;
 
     public TankBlastClientApplication(){
-        this.networkManager = new NetworkManager("server.tankblast.de", 26656, playerId, this);
+        this.networkManager = new NetworkManager("localhost", 26656, playerId, this);
         this.availableGamesScreenManager = new AvailableGamesScreenManager(this);
         this.createLobbyScreenManager = new CreateLobbyScreenManager(this);
         this.lobbyScreenManager = new LobbyScreenManager(this);
@@ -70,7 +70,7 @@ public class TankBlastClientApplication {
         while (running){
             try {
                 time = System.currentTimeMillis();
-                renderer.clear(Colour.GREEN);
+                renderer.clear(Colour.WHITE);
                 gameSessionManager.updateCamera();
                 collectVoxels();
                 window.showImage(renderer.render(width, height));
