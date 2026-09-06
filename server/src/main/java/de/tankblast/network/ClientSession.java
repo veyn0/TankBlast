@@ -8,6 +8,7 @@ import de.tankblast.protocol.packet.play.ClientBoundBulletSpawnPacket;
 import de.tankblast.protocol.packet.play.ClientBoundGameOverPacket;
 import de.tankblast.protocol.packet.play.ClientBoundInitGamePacket;
 import de.tankblast.protocol.packet.play.ClientBoundPlayerEliminatedPacket;
+import de.tankblast.protocol.packet.play.ClientBoundPlayerLivesPacket;
 import de.tankblast.protocol.packet.play.ClientBoundPlayerStatePacket;
 import de.tankblast.protocol.packet.play.ServerBoundBulletSpawnPacket;
 import de.tankblast.protocol.packet.play.ServerBoundPlayerHitPacket;
@@ -88,8 +89,11 @@ public class ClientSession {
             return;
         }
         if (packet instanceof ServerBoundPlayerHitPacket p) {
-            if (currentLobby.registerHit(p.getTargetPlayerId())) {
-                currentLobby.broadcast(new ClientBoundPlayerEliminatedPacket(p.getTargetPlayerId()));
+            UUID targetId = p.getTargetPlayerId();
+            boolean eliminated = currentLobby.registerHit(targetId);
+            currentLobby.broadcast(new ClientBoundPlayerLivesPacket(targetId, currentLobby.getLives(targetId)));
+            if (eliminated) {
+                currentLobby.broadcast(new ClientBoundPlayerEliminatedPacket(targetId));
             }
             checkForWinner();
         }

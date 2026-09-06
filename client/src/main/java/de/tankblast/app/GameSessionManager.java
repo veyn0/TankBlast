@@ -1,5 +1,6 @@
 package de.tankblast.app;
 
+import de.tankblast.Constants;
 import de.tankblast.game.GameLoop;
 import de.tankblast.game.World;
 import de.tankblast.input.InputManager;
@@ -13,6 +14,7 @@ import de.tankblast.network.GameNetworkController;
 import de.tankblast.protocol.dto.player.PlayerInfo;
 import de.tankblast.render.EntityGraphicsComponent;
 import de.tankblast.render.GraphicsComponent;
+import de.tankblast.render.LivesHudComponent;
 import de.tankblast.render.PlayerCenteredCamera;
 import de.tankblast.texture.ImageTextureLoader;
 import de.tankblast.texture.PlayerColorPalette;
@@ -30,21 +32,28 @@ public class GameSessionManager {
     private final TankBlastClientApplication clientApplication;
     private final InputManager inputManager;
     private final PlayerCenteredCamera camera;
+    private final int screenWidth;
+    private final int screenHeight;
 
     private World world;
     private Player localPlayer;
     private GameLoop gameLoop;
 
     private final Map<UUID, Texture> playerTextures = new HashMap<>();
+    private final Map<UUID, Integer> livesByPlayer = new HashMap<>();
     private Texture bulletTexture;
     private Texture obstacleTexture;
 
     public GameSessionManager(TankBlastClientApplication clientApplication,
                               InputManager inputManager,
-                              PlayerCenteredCamera camera) {
+                              PlayerCenteredCamera camera,
+                              int screenWidth,
+                              int screenHeight) {
         this.clientApplication = clientApplication;
         this.inputManager = inputManager;
         this.camera = camera;
+        this.screenWidth = screenWidth;
+        this.screenHeight = screenHeight;
     }
 
     public void startGameSession(int mapId, List<PlayerInfo> players) {
@@ -55,6 +64,7 @@ public class GameSessionManager {
 
         this.world = new World();
         this.playerTextures.clear();
+        this.livesByPlayer.clear();
 
         UUID localPlayerId = clientApplication.getPlayerId();
         for (int i = 0; i < players.size(); i++) {
@@ -62,6 +72,7 @@ public class GameSessionManager {
             Player player = new Player(info.getPlayerId(), MapRegistry.getSpawnPoint(mapId, i), 90.0);
             world.addEntity(player);
             playerTextures.put(info.getPlayerId(), TextureUtils.tint(basePlayerTexture, PlayerColorPalette.colourFor(i)));
+            livesByPlayer.put(info.getPlayerId(), Constants.STARTING_LIVES);
             if (info.getPlayerId().equals(localPlayerId)) {
                 this.localPlayer = player;
             }
@@ -96,6 +107,7 @@ public class GameSessionManager {
         world = null;
         localPlayer = null;
         playerTextures.clear();
+        livesByPlayer.clear();
         camera.setX(0);
         camera.setY(0);
     }
@@ -128,9 +140,14 @@ public class GameSessionManager {
         if (world == null) return;
         Player player = world.findPlayer(playerId);
         if (player != null) world.removeEntity(player);
+        livesByPlayer.put(playerId, 0);
         if (localPlayer != null && localPlayer.getPlayerId().equals(playerId) && gameLoop != null) {
             gameLoop.eliminate();
         }
+    }
+
+    public void onPlayerLivesUpdate(UUID playerId, int lives) {
+        livesByPlayer.put(playerId, lives);
     }
 
     public List<GraphicsComponent> getGraphicsComponents() {
@@ -141,6 +158,10 @@ public class GameSessionManager {
             if (texture != null) {
                 components.add(new EntityGraphicsComponent(entity, texture));
             }
+        }
+        if (localPlayer != null) {
+            int lives = livesByPlayer.getOrDefault(localPlayer.getPlayerId(), Constants.STARTING_LIVES);
+            components.add(new LivesHudComponent(camera, screenWidth, screenHeight, lives, Constants.STARTING_LIVES));
         }
         return components;
     }

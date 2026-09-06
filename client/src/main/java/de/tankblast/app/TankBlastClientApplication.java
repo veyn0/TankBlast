@@ -56,7 +56,7 @@ public class TankBlastClientApplication {
         window.addFocusLossHandler(inputManager::onWindowOutOfFocus);
 
         PlayerCenteredCamera camera = new PlayerCenteredCamera();
-        this.gameSessionManager = new GameSessionManager(this, inputManager, camera);
+        this.gameSessionManager = new GameSessionManager(this, inputManager, camera, width, height);
 
         this.renderer = new VoxelRenderer();
         renderer.setCamera(camera);

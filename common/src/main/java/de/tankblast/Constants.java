@@ -10,4 +10,6 @@ public class Constants {
 //    Max degrees a Player can rotate per second
     public static final double MAX_ROTATION_SPEED = 90;
 
+    public static final int STARTING_LIVES = 5;
+
 }
