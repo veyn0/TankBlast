@@ -24,7 +24,11 @@
 
 
     <dependencies>
-
+        <dependency>
+            <groupId>xyz.wireway</groupId>
+            <artifactId>WireWay</artifactId>
+            <version>0.1-ALPHA</version>
+        </dependency>
     </dependencies>
 
 </project>

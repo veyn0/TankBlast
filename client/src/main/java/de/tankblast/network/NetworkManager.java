@@ -2,9 +2,9 @@ package de.tankblast.network;
 
 import de.tankblast.app.TankBlastClientApplication;
 import de.tankblast.protocol.registry.CommonPacketRegistry;
-import xyz.wireway.frame.channel.ChannelSet;
+import xyz.wireway.channel.ChannelSet;
+import xyz.wireway.service.PacketStream;
 import xyz.wireway.service.WireWay;
-import xyz.wireway.service.packetstream.PacketStream;
 import xyz.wireway.transport.adapter.SocketTransport;
 
 import java.util.UUID;
