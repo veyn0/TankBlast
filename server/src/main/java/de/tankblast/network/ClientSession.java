@@ -7,6 +7,7 @@ import de.tankblast.protocol.dto.game.lobby.JoinLobbyRequest;
 import de.tankblast.protocol.packet.play.ClientBoundBulletSpawnPacket;
 import de.tankblast.protocol.packet.play.ClientBoundGameOverPacket;
 import de.tankblast.protocol.packet.play.ClientBoundInitGamePacket;
+import de.tankblast.protocol.packet.play.ClientBoundPlayerEliminatedPacket;
 import de.tankblast.protocol.packet.play.ClientBoundPlayerStatePacket;
 import de.tankblast.protocol.packet.play.ServerBoundBulletSpawnPacket;
 import de.tankblast.protocol.packet.play.ServerBoundPlayerHitPacket;
@@ -30,8 +31,8 @@ public class ClientSession {
     private final PacketStream statusStream;
     private final LobbyManager lobbyManager;
 
-    private UUID playerId;
-    private Lobby currentLobby;
+    private volatile UUID playerId;
+    private volatile Lobby currentLobby;
 
     public ClientSession(WireWay wireWay, LobbyManager lobbyManager) {
         this.wireWay = wireWay;
@@ -56,8 +57,11 @@ public class ClientSession {
         }
         if (packet instanceof ServerBoundJoinLobbyRequestPacket p) {
             JoinLobbyRequest request = p.getRequest();
-            playerId = request.getPlayerId();
             Lobby lobby = lobbyManager.getLobby(request.getLobbyId());
+            if (lobby == null || lobby.isStarted() || lobby.isFull()) {
+                return currentLobby != null ? new ClientBoundLobbyInfoResponsePacket(currentLobby.toLobbyInfo()) : null;
+            }
+            playerId = request.getPlayerId();
             currentLobby = lobby;
             lobby.addPlayer(this);
             lobby.broadcastExcept(playerId, new ClientBoundLobbyUpdatePacket(lobby.toLobbyInfo()));
@@ -84,14 +88,41 @@ public class ClientSession {
             return;
         }
         if (packet instanceof ServerBoundPlayerHitPacket p) {
-            currentLobby.registerHit(p.getTargetPlayerId());
-            UUID winnerId = currentLobby.getWinnerIfDecided();
-            if (winnerId != null && !currentLobby.isFinished()) {
-                currentLobby.setFinished(true);
-                String winnerName = "Player-" + winnerId.toString().substring(0, 4);
-                currentLobby.broadcast(new ClientBoundGameOverPacket(winnerId, winnerName));
-                lobbyManager.removeLobby(currentLobby.getId());
+            if (currentLobby.registerHit(p.getTargetPlayerId())) {
+                currentLobby.broadcast(new ClientBoundPlayerEliminatedPacket(p.getTargetPlayerId()));
             }
+            checkForWinner();
+        }
+    }
+
+    public void onDisconnect(){
+        Lobby lobby = currentLobby;
+        UUID id = playerId;
+        if (lobby == null || id == null) return;
+
+        if (lobby.isStarted()) {
+            if (!lobby.isFinished() && lobby.eliminate(id)) {
+                lobby.broadcast(new ClientBoundPlayerEliminatedPacket(id));
+            }
+            lobby.removePlayer(id);
+            checkForWinner();
+        } else {
+            lobby.leaveLobby(id);
+            if (lobby.isEmpty()) {
+                lobbyManager.removeLobby(lobby.getId());
+            } else {
+                lobby.broadcastExcept(id, new ClientBoundLobbyUpdatePacket(lobby.toLobbyInfo()));
+            }
+        }
+    }
+
+    private void checkForWinner(){
+        UUID winnerId = currentLobby.getWinnerIfDecided();
+        if (winnerId != null && !currentLobby.isFinished()) {
+            currentLobby.setFinished(true);
+            String winnerName = "Player-" + winnerId.toString().substring(0, 4);
+            currentLobby.broadcast(new ClientBoundGameOverPacket(winnerId, winnerName));
+            lobbyManager.removeLobby(currentLobby.getId());
         }
     }
 

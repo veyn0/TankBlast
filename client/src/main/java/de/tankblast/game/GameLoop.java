@@ -46,6 +46,7 @@ public class GameLoop implements Runnable {
     private final Queue<Runnable> outgoingPackets = new ConcurrentLinkedQueue<>();
 
     private volatile boolean running;
+    private volatile boolean eliminated;
     private Thread thread;
 
     private long lastShotAt = 0;
@@ -70,6 +71,10 @@ public class GameLoop implements Runnable {
     public void stop() {
         running = false;
         if (thread != null) thread.interrupt();
+    }
+
+    public void eliminate() {
+        eliminated = true;
     }
 
     public void enqueueIncoming(Runnable packetHandler) {
@@ -133,6 +138,8 @@ public class GameLoop implements Runnable {
     }
 
     private void applyInput(InputContext input, long now) {
+        if (eliminated) return;
+
         double rotationDelta = InputMapper.getRotationDegrees(input, Constants.MAX_ROTATION_SPEED);
         localPlayer.setRotation(localPlayer.getRotation() - rotationDelta); // D (right) turns clockwise
 

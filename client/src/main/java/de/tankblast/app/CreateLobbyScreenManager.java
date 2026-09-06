@@ -85,7 +85,7 @@ public class CreateLobbyScreenManager {
         System.out.println("click game create");
         StatusNetworkController networkController = clientApplication.getNetworkManager().getStatusNetworkController();
         networkController.createLobby(
-                new CreateLobbyRequest(clientApplication.getPlayerId(), name, maxPlayers, map),
+                new CreateLobbyRequest(clientApplication.getPlayerId(), name, maxPlayers + 1, map),
                 lobbyInfo -> {
                     clientApplication.setCurrentView(clientApplication.getLobbyScreen().createLobbyScreen(lobbyInfo));
                 }

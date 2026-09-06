@@ -14,6 +14,8 @@ import java.util.UUID;
 
 public class Lobby {
 
+    private static final int STARTING_LIVES = 5;
+
     private final int id;
     private final String name;
     private final int maxPlayers;
@@ -36,7 +38,24 @@ public class Lobby {
 
     public synchronized void addPlayer(ClientSession session){
         players.put(session.getPlayerId(), session);
-        lives.put(session.getPlayerId(), 5);
+        lives.put(session.getPlayerId(), STARTING_LIVES);
+    }
+
+    public synchronized void removePlayer(UUID playerId){
+        players.remove(playerId);
+    }
+
+    public synchronized void leaveLobby(UUID playerId){
+        players.remove(playerId);
+        lives.remove(playerId);
+    }
+
+    public synchronized boolean isEmpty(){
+        return players.isEmpty();
+    }
+
+    public synchronized boolean isFull(){
+        return players.size() >= maxPlayers;
     }
 
     public synchronized List<PlayerInfo> getPlayerInfos(){
@@ -65,12 +84,19 @@ public class Lobby {
         }
     }
 
-    public synchronized int registerHit(UUID targetPlayerId){
-        int remaining = lives.getOrDefault(targetPlayerId, 0);
-        if (remaining <= 0) return remaining;
+    public synchronized boolean registerHit(UUID targetPlayerId){
+        Integer remaining = lives.get(targetPlayerId);
+        if (remaining == null || remaining <= 0) return false;
         remaining--;
         lives.put(targetPlayerId, remaining);
-        return remaining;
+        return remaining == 0;
+    }
+
+    public synchronized boolean eliminate(UUID playerId){
+        Integer remaining = lives.get(playerId);
+        if (remaining == null || remaining <= 0) return false;
+        lives.put(playerId, 0);
+        return true;
     }
 
     public synchronized UUID getWinnerIfDecided(){
@@ -78,7 +104,7 @@ public class Lobby {
         for (Map.Entry<UUID, Integer> entry : lives.entrySet()) {
             if (entry.getValue() > 0) alive.add(entry.getKey());
         }
-        if (players.size() > 1 && alive.size() == 1) return alive.get(0);
+        if (lives.size() > 1 && alive.size() == 1) return alive.get(0);
         return null;
     }
 

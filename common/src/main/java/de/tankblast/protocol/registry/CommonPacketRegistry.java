@@ -5,6 +5,7 @@ import de.tankblast.protocol.packet.configuration.ServerBoundStartConfigurationP
 import de.tankblast.protocol.packet.play.ClientBoundBulletSpawnPacket;
 import de.tankblast.protocol.packet.play.ClientBoundGameOverPacket;
 import de.tankblast.protocol.packet.play.ClientBoundInitGamePacket;
+import de.tankblast.protocol.packet.play.ClientBoundPlayerEliminatedPacket;
 import de.tankblast.protocol.packet.play.ClientBoundPlayerStatePacket;
 import de.tankblast.protocol.packet.play.ServerBoundBulletSpawnPacket;
 import de.tankblast.protocol.packet.play.ServerBoundPlayerHitPacket;
@@ -41,6 +42,7 @@ public class CommonPacketRegistry {
         protocol.register(ServerBoundBulletSpawnPacket.class);
         protocol.register(ClientBoundBulletSpawnPacket.class);
         protocol.register(ServerBoundPlayerHitPacket.class);
+        protocol.register(ClientBoundPlayerEliminatedPacket.class);
         protocol.register(ClientBoundGameOverPacket.class);
 
         return new PacketRegistry(protocol);
